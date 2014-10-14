@@ -44,12 +44,15 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
 
     self.paymentCallbackId = command.callbackId;
 
+/*
+    // Property `canMakePayments` has only reported false so far, but the Apple Pay sheet can be shown anyway.
     if (![PKPaymentAuthorizationViewController canMakePayments]) {
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
         [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
         return;
     }
- 
+*/ 
+
     PKPaymentRequest *request = [PKPaymentRequest new];
     [request setPaymentSummaryItems:items];
     
