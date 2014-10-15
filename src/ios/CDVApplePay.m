@@ -31,6 +31,7 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
 - (void)setMerchantId:(CDVInvokedUrlCommand*)command
 {
     merchantId = [command.arguments objectAtIndex:0];
+    NSLog(@"ApplePay set merchant id to %@", merchantId);
 }
 
 
