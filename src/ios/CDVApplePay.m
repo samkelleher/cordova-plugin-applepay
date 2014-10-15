@@ -1,10 +1,5 @@
 #import "CDVApplePay.h"
 
-static NSString * const kShippingMethodCarrierPidgeon = @"Carrier Pidgeon";
-static NSString * const kShippingMethodUberRush       = @"Uber Rush";
-static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
-
-
 @implementation CDVApplePay
 
 @synthesize paymentCallbackId;
@@ -37,9 +32,11 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
 
 - (NSArray *)itemsFromArguments:(NSArray *)arguments
 {
+    NSArray *itemDescriptions = [[arguments objectAtIndex:0] objectForKey:@"items"];
+    
     NSMutableArray *items = [[NSMutableArray alloc] init];
 
-    for (NSDictionary *item in arguments) {
+    for (NSDictionary *item in itemDescriptions) {
         
         NSString *label = [item objectForKey:@"label"];
         
@@ -53,6 +50,27 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
     return items;
 }
 
+- (NSArray *)shippingMethodsFromArguments:(NSArray *)arguments
+{
+    NSArray *shippingDescriptions = [[arguments objectAtIndex:0] objectForKey:@"shippingMethods"];
+    
+    NSMutableArray *shippingMethods = [[NSMutableArray alloc] init];
+    
+    
+     for (NSDictionary *desc in shippingDescriptions) {
+         
+         NSString *identifier = [desc objectForKey:@"identifier"];
+         NSString *detail = [desc objectForKey:@"detail"];
+         
+         NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[[desc objectForKey:@"amount"] decimalValue]];
+         
+         PKPaymentSummaryItem *newMethod = [self shippingMethodWithIdentifier:identifier detail:detail amount:amount];
+         
+         [shippingMethods addObject:newMethod];
+     }
+     
+     return shippingMethods;
+}
 
 - (void)makePaymentRequest:(CDVInvokedUrlCommand*)command
 {
@@ -82,12 +100,7 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
     
     [request setPaymentSummaryItems:[self itemsFromArguments:command.arguments]];
     
-    NSArray *shippingMethods = @[
-                                 [self shippingMethodWithIdentifier:kShippingMethodCarrierPidgeon detail:kShippingMethodCarrierPidgeon amount:10.f],
-                                 [self shippingMethodWithIdentifier:kShippingMethodUberRush detail:kShippingMethodUberRush amount:15.f],
-                                 [self shippingMethodWithIdentifier:kShippingMethodSentientDrone detail:kShippingMethodSentientDrone amount:20.f]
-                                 ];
-    request.shippingMethods = shippingMethods;
+    request.shippingMethods = [self shippingMethodsFromArguments:command.arguments];
     
     // These appear to be the only 3 supported
     // Sorry, Discover Card
@@ -131,12 +144,12 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
 }
 
 
-- (PKShippingMethod *)shippingMethodWithIdentifier:(NSString *)idenfifier detail:(NSString *)detail amount:(CGFloat)amount
+- (PKShippingMethod *)shippingMethodWithIdentifier:(NSString *)idenfifier detail:(NSString *)detail amount:(NSDecimalNumber *)amount
 {
     PKShippingMethod *shippingMethod = [PKShippingMethod new];
     shippingMethod.identifier = idenfifier;
     shippingMethod.detail = @"";
-    shippingMethod.amount = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithFloat:amount] decimalValue]];
+    shippingMethod.amount = amount;
     shippingMethod.label = detail;
     
     return shippingMethod;

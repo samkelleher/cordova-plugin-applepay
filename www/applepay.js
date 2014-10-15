@@ -9,8 +9,8 @@ var ApplePay = {
         exec(successCallback, errorCallback, "ApplePay", "setMerchantId", [merchantId]);
     },
     
-    makePaymentRequest: function(successCallback, errorCallback, items) {
-        exec(successCallback, errorCallback, "ApplePay", "makePaymentRequest", items);
+    makePaymentRequest: function(successCallback, errorCallback, order) {
+        exec(successCallback, errorCallback, "ApplePay", "makePaymentRequest", [order]);
     }
     
 };

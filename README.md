@@ -26,11 +26,12 @@ Set your Apple-given merchant ID.
 
 Request a payment with Apple Pay.
 
-    ApplePay.makePaymentRequest(successCallback, errorCallback, items);
+    ApplePay.makePaymentRequest(successCallback, errorCallback, order);
 
 ### Parameters
 
-- __items__: Array of item objects with form ```{ label: "Item 1", amount: 1.11 }```
+- __order.items__: Array of item objects with form ```{ label: "Item 1", amount: 1.11 }```
+- __order.shippingMethods__: Array of item objects with form ```{ identifier: "My Method", detail: "Ship by method 1", amount: 1.11 }```
 
 ### Example
 
@@ -43,8 +44,14 @@ Request a payment with Apple Pay.
         alert(response);
     }
 	 
-    ApplePay.makePaymentRequest(onSuccess, onError, [
-        { label: "item 1", amount: 1.11 },
-        { label: "item 2", amount: 2.22 }
-    ]);
+    ApplePay.makePaymentRequest(onSuccess, onError, {
+    	items: [
+	        { label: "item 1", amount: 1.11 },
+	        { label: "item 2", amount: 2.22 }
+	    ],
+	    shippingMethods: [
+	    	{ identifier: "By Sea", detail: "Shipmates on a ship.", amount: 1.11 },
+	    	{ identifier: "Airmail", detail: "Ship it by airplane.", amount: 5.55 }
+	    ]
+	);
 

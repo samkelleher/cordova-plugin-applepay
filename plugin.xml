@@ -16,17 +16,17 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <js-module src="www/applepay.js" name="payment">
             <clobbers target="ApplePay" />
         </js-module>
+        
+        <framework src="PassKit.framework"/>
+        
+        <header-file src="src/ios/CDVApplePay.h"/>
+        <source-file src="src/ios/CDVApplePay.m"/>
 
         <config-file target="config.xml" parent="/*">
 	        <feature name="ApplePay">
 	            <param name="ios-package" value="CDVApplePay"/>
 	        </feature>
         </config-file>
-        
-        <header-file src="src/ios/CDVApplePay.h"/>
-        <source-file src="src/ios/CDVApplePay.m"/>
-        
-        <framework src="PassKit.framework" />
         
     </platform>
     
