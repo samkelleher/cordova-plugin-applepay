@@ -28,33 +28,58 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
 }
 
 
-- (void)initWithPaymentRequest:(CDVInvokedUrlCommand*)command
-{    
+- (void)setMerchantId:(CDVInvokedUrlCommand*)command
+{
+    merchantId = [command.arguments objectAtIndex:0];
+}
+
+
+- (NSArray *)itemsFromArguments:(NSArray *)arguments
+{
     NSMutableArray *items = [[NSMutableArray alloc] init];
-    for (NSDictionary *item in command.arguments) {
+
+    for (NSDictionary *item in arguments) {
         
         NSString *label = [item objectForKey:@"label"];
-
+        
         NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[[item objectForKey:@"amount"] decimalValue]];
         
         PKPaymentSummaryItem *newItem = [PKPaymentSummaryItem summaryItemWithLabel:label amount:amount];
         
         [items addObject:newItem];
     }
+    
+    return items;
+}
 
+
+- (void)makePaymentRequest:(CDVInvokedUrlCommand*)command
+{
     self.paymentCallbackId = command.callbackId;
 
-/*
-    // Property `canMakePayments` has only reported false so far, but the Apple Pay sheet can be shown anyway.
-    if (![PKPaymentAuthorizationViewController canMakePayments]) {
-        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
+    if (merchantId == nil) {
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"Please call setMerchantId() with your Apple-given merchant ID."];
         [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
         return;
     }
-*/ 
 
+    
+    NSLog(@"ApplePay canMakePayments == %@", [PKPaymentAuthorizationViewController canMakePayments]);
+    if (![PKPaymentAuthorizationViewController canMakePayments]) {
+        
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
+// Property `canMakePayments` has only reported false so far, but the Apple Pay sheet can be shown anyway.
+//        [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
+//        return;
+    }
+    
+    
     PKPaymentRequest *request = [PKPaymentRequest new];
-    [request setPaymentSummaryItems:items];
+    
+    // Must be configured in Apple Developer Member Center
+    request.merchantIdentifier = merchantId;
+    
+    [request setPaymentSummaryItems:[self itemsFromArguments:command.arguments]];
     
     NSArray *shippingMethods = @[
                                  [self shippingMethodWithIdentifier:kShippingMethodCarrierPidgeon detail:kShippingMethodCarrierPidgeon amount:10.f],
@@ -62,10 +87,6 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
                                  [self shippingMethodWithIdentifier:kShippingMethodSentientDrone detail:kShippingMethodSentientDrone amount:20.f]
                                  ];
     request.shippingMethods = shippingMethods;
-    
-    // Must be configured in Apple Developer Member Center
-    // Doesn't seem like the functionality is there yet
-    request.merchantIdentifier = @"com.applepay.test";
     
     // These appear to be the only 3 supported
     // Sorry, Discover Card
@@ -81,8 +102,6 @@ static NSString * const kShippingMethodSentientDrone  = @"Sentient Drone";
     
     request.countryCode = @"US";
     request.currencyCode = @"USD";
-    
-    [request setPaymentSummaryItems:items];
     
     PKPaymentAuthorizationViewController *authVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:request];
 

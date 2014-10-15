@@ -13,14 +13,20 @@ cordova plugin add https://github.com/jbeuckm/cordova-plugin-applepay.git
 
 ## Methods
 
-- ApplePay.initWithPaymentRequest
+- ApplePay.setMerchantId
+- ApplePay.makePaymentRequest
 
+## ApplePay.setMerchantId
 
-## ApplePay.initWithPaymentRequest
+Set your Apple-given merchant ID.
+
+	ApplePay.setMerchantId("merchant.my.id");
+
+## ApplePay.makePaymentRequest
 
 Request a payment with Apple Pay.
 
-    ApplePay.initWithPaymentRequest(successCallback, errorCallback, items);
+    ApplePay.makePaymentRequest(successCallback, errorCallback, items);
 
 ### Parameters
 
@@ -28,14 +34,16 @@ Request a payment with Apple Pay.
 
 ### Example
 
+	ApplePay.setMerchantId("merchant.apple.test");
+    
     function onError(err) {
         alert(JSON.stringify(err));
     }
     function onSuccess(response) {
         alert(response);
     }
-
-    ApplePay.initWithPaymentRequest(onSuccess, onError, [
+	 
+    ApplePay.makePaymentRequest(onSuccess, onError, [
         { label: "item 1", amount: 1.11 },
         { label: "item 2", amount: 2.22 }
     ]);

@@ -3,7 +3,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.beuckman.applepay"
-      version="0.0.1">
+      version="0.0.2">
 
     <name>Apple Pay</name>
     <description>Implements ApplePay request.</description>
@@ -23,10 +23,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	        </feature>
         </config-file>
         
-        <framework src="PassKit.framework" />
+        <header-file src="src/ios/CDVApplePay.h"/>
+        <source-file src="src/ios/CDVApplePay.m"/>
         
-        <header-file src="src/ios/CDVApplePay.h" />
-        <source-file src="src/ios/CDVApplePay.m" />
+        <framework src="PassKit.framework" />
         
     </platform>
     

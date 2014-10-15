@@ -5,8 +5,12 @@ var argscheck = require('cordova/argscheck'),
     
 var ApplePay = {
     
-    initWithPaymentRequest: function(successCallback, errorCallback, items) {
-        exec(successCallback, errorCallback, "ApplePay", "initWithPaymentRequest", items);
+    setMerchantId: function(successCallback, errorCallback, merchantId) {
+        exec(successCallback, errorCallback, "ApplePay", "setMerchantId", merchantId);
+    },
+    
+    makePaymentRequest: function(successCallback, errorCallback, items) {
+        exec(successCallback, errorCallback, "ApplePay", "makePaymentRequest", items);
     }
     
 };
