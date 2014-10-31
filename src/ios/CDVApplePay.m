@@ -81,17 +81,13 @@
         [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
         return;
     }
-
     
-    NSLog(@"ApplePay canMakePayments == %@", [PKPaymentAuthorizationViewController canMakePayments]);
-    if (![PKPaymentAuthorizationViewController canMakePayments]) {
-        
+    NSLog(@"ApplePay canMakePayments == %s", [PKPaymentAuthorizationViewController canMakePayments]? "true" : "false");
+    if ([PKPaymentAuthorizationViewController canMakePayments] == NO) {
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
-// Property `canMakePayments` has only reported false so far, but the Apple Pay sheet can be shown anyway.
-//        [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
-//        return;
+        [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
+        return;
     }
-    
     
     PKPaymentRequest *request = [PKPaymentRequest new];
     
@@ -100,7 +96,7 @@
     
     [request setPaymentSummaryItems:[self itemsFromArguments:command.arguments]];
     
-    request.shippingMethods = [self shippingMethodsFromArguments:command.arguments];
+    [request setShippingMethods:[self shippingMethodsFromArguments:command.arguments]];
     
     // These appear to be the only 3 supported
     // Sorry, Discover Card
@@ -112,14 +108,22 @@
     
     // Which payment processing protocol the vendor supports
     // This value depends on the back end, looks like there are two possibilities
-    request.merchantCapabilities = PKMerchantCapability3DS;
+    request.merchantCapabilities = PKMerchantCapabilityEMV;// PKMerchantCapability3DS;
     
     request.countryCode = @"US";
     request.currencyCode = @"USD";
-    
+
+    NSLog(@"ApplePay request == %@", request);
+
     PKPaymentAuthorizationViewController *authVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:request];
 
     authVC.delegate = self;
+    
+    if (authVC == nil) {
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"PKPaymentAuthorizationViewController was nil."];
+        [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
+        return;
+    }
     
     [self.viewController presentViewController:authVC animated:YES completion:nil];
 }
