@@ -4,6 +4,60 @@
 
 @synthesize paymentCallbackId;
 
+
+- (void)pluginInitialize
+{
+
+    // Set these to the payment cards accepted.
+    // They will nearly always be the same.
+    self.supportedPaymentNetworks = @[PKPaymentNetworkVisa, PKPaymentNetworkMasterCard, PKPaymentNetworkAmex];
+
+    // Set the capabilities that your merchant supports
+    // Adyen for example, only supports the 3DS one.
+    self.merchantCapabilities = PKMerchantCapability3DS;// PKMerchantCapabilityEMV;
+
+
+}
+
+- (void)canMakePayments:(CDVInvokedUrlCommand*)command
+{
+        if ([PKPaymentAuthorizationViewController canMakePayments]) {
+        if ((floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_8_0)) {
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
+            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+            return;
+        } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
+            if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:self.supportedPaymentNetworks capabilities:(self.merchantCapabilities)]) {
+                CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
+                [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                return;
+            } else {
+                CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device can make payments but has no supported cards"];
+                [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                return;
+            }
+        } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){8, 0, 0}]) {
+            if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:self.supportedPaymentNetworks]) {
+                CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
+                [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                return;
+            } else {
+                CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device can make payments but has no supported cards"];
+                [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                return;
+            }
+        } else {
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
+            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+            return;
+        }
+    } else {
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+        return;
+    }
+}
+
 - (void)setMerchantId:(CDVInvokedUrlCommand*)command
 {
     merchantId = [command.arguments objectAtIndex:0];
@@ -79,17 +133,12 @@
 
     [request setShippingMethods:[self shippingMethodsFromArguments:command.arguments]];
 
-    // These appear to be the only 3 supported
-    // Sorry, Discover Card
-    request.supportedNetworks = @[PKPaymentNetworkAmex, PKPaymentNetworkMasterCard, PKPaymentNetworkVisa];
+    request.supportedNetworks = self.supportedPaymentNetworks;
+    request.merchantCapabilities = self.merchantCapabilities;
 
     // What type of info you need (eg email, phone, address, etc);
     request.requiredBillingAddressFields = PKAddressFieldAll;
     request.requiredShippingAddressFields = PKAddressFieldPostalAddress;
-
-    // Which payment processing protocol the vendor supports
-    // This value depends on the back end, looks like there are two possibilities
-    request.merchantCapabilities = PKMerchantCapabilityEMV;// PKMerchantCapability3DS;
 
     request.countryCode = @"US";
     request.currencyCode = @"USD";
