@@ -19,20 +19,30 @@ The plugin exposes the `org.cordova.applepay` plugin, accessible in the browser 
 
 - ApplePay.setMerchantId
 - ApplePay.makePaymentRequest
+- ApplePay.canMakePayments
 
 ## ApplePay.setMerchantId
-
 Set your Apple-given merchant ID.
 
 ```
-	ApplePay.setMerchantId('merchant.my.id');
+	ApplePay.setMerchantId(merchantId, successCallback, errorCallback);
 ```
 
 ## ApplePay.makePaymentRequest
-
 Request a payment with Apple Pay.
+
 ```
-  ApplePay.makePaymentRequest(successCallback, errorCallback, order);
+  ApplePay.makePaymentRequest(order, successCallback, errorCallback);
+```
+
+## ApplePay.canMakePayments
+Detects if the current iDevice supports Apple Pay and has any capable cards registered.
+
+If the `errorCallback` is called, the device does not support Apple Pay. See the message to see why.
+If the `successCallback` is called, you're good to go ahead and display the related UI.
+
+```
+  ApplePay.canMakePayments(successCallback, errorCallback);
 ```
 
 ### Parameters

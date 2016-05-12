@@ -2,17 +2,21 @@
 var argscheck = require('cordova/argscheck'),
     utils = require('cordova/utils'),
     exec = require('cordova/exec');
-    
+
 var ApplePay = {
-    
-    setMerchantId: function(successCallback, errorCallback, merchantId) {
-        exec(successCallback, errorCallback, "ApplePay", "setMerchantId", [merchantId]);
+
+    canMakePayments: function(successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'ApplePay', 'canMakePayments', []);
     },
-    
-    makePaymentRequest: function(successCallback, errorCallback, order) {
-        exec(successCallback, errorCallback, "ApplePay", "makePaymentRequest", [order]);
+
+    setMerchantId: function(merchantId, successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'ApplePay', 'setMerchantId', [merchantId]);
+    },
+
+    makePaymentRequest: function(order, successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'ApplePay', 'makePaymentRequest', [order]);
     }
-    
+
 };
 
 module.exports = ApplePay;
