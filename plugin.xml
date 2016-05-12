@@ -2,23 +2,23 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
-           id="org.beuckman.applepay"
+           id="org.cordova.applepay"
       version="0.0.2">
 
     <name>Apple Pay</name>
     <description>Implements ApplePay request.</description>
     <keywords>cordova,payment,apple pay</keywords>
-    <repo>git@bitbucket.org:jbeuckm/cordova-plugin-applepay.git</repo>
-    
+    <repo>git@bitbucket.org:username/cordova-plugin-applepay.git</repo>
+
 
     <platform name="ios">
 
         <js-module src="www/applepay.js" name="payment">
             <clobbers target="ApplePay" />
         </js-module>
-        
+
         <framework src="PassKit.framework"/>
-        
+
         <header-file src="src/ios/CDVApplePay.h"/>
         <source-file src="src/ios/CDVApplePay.m"/>
 
@@ -27,7 +27,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	            <param name="ios-package" value="CDVApplePay"/>
 	        </feature>
         </config-file>
-        
+
     </platform>
-    
+
 </plugin>
