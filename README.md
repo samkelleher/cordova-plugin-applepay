@@ -70,22 +70,30 @@ ApplePay.makePaymentRequest(
 	      { label: 'item 2', amount: 2.22 }
 	  ],
 	  shippingMethods: [
-	  	{ identifier: 'By Sea', detail: 'Shipmates on a ship.', amount: 1.11 },
-	  	{ identifier: 'Airmail', detail: 'Ship it by airplane.', amount: 5.55 }
+	  	{ identifier: 'Next Day', detail: 'Arrives tomorrow by 5pm.', amount: 3.99 },
+	  	{ identifier: 'Standard', detail: 'Arrive by Friday.', amount: 4.99 },
+			{ identifier: 'Saturday Delivery', detail: 'Arrive by 5pm this Saturday.', amount: 6.99 }
 	  ],
 		merchantIdentifier: 'merchant.apple.test',
 		currencyCode: 'GBP', // ISO 4217 currency code
 		countryCode: 'GB' // ISO 3166-1 alpha-2 country code - Merchant country code (!),
-		billingAddressRequirement: 'all',
-		shippingAddressRequirement: 'all'
+		billingAddressRequirement: 'none',
+		shippingAddressRequirement: 'none',
+		shippingType: 'shipping'
 	},
 	onSuccess,
 	onError
 );
 ```
 
+Valid values for the `shippingType` are:
+ - `shipping` (default)
+ - `delivery`
+ - `store`
+ - `service`
+
 Valid values for the `billingAddressRequirement` and `shippingAddressRequirement` properties are:
- - `none`
+ - `none` (default)
  - `all`
  - `postcode`
  - `name`

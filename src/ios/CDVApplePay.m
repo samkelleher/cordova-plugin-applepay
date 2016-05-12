@@ -82,6 +82,24 @@
     return currencyCode;
 }
 
+- (PKShippingType)shippingTypeFromArguments:(NSArray *)arguments
+{
+    NSString *shippingType = [[arguments objectAtIndex:0] objectForKey:@"shippingType"];
+
+    if ([shippingType isEqualToString:@"shipping"]) {
+        return PKShippingTypeShipping;
+    } else if ([shippingType isEqualToString:@"delivery"]) {
+        return PKShippingTypeDelivery;
+    } else if ([shippingType isEqualToString:@"store"]) {
+        return PKShippingTypeStorePickup;
+    } else if ([shippingType isEqualToString:@"service"]) {
+        return PKShippingTypeServicePickup;
+    }
+
+
+    return PKShippingTypeShipping;
+}
+
 - (PKAddressField)billingAddressRequirementFromArguments:(NSArray *)arguments
 {
     NSString *billingAddressRequirement = [[arguments objectAtIndex:0] objectForKey:@"billingAddressRequirement"];
@@ -181,10 +199,6 @@
 
     PKPaymentRequest *request = [PKPaymentRequest new];
 
-    [request setPaymentSummaryItems:[self itemsFromArguments:command.arguments]];
-
-    [request setShippingMethods:[self shippingMethodsFromArguments:command.arguments]];
-
     if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
         request.supportedNetworks = supportedPaymentNetworks;
     } else {
@@ -193,11 +207,15 @@
 
     request.merchantCapabilities = merchantCapabilities;
 
+    // All this data is loaded from the Cordova object passed in. See documentation.
     [request setCurrencyCode:[self currencyCodeFromArguments:command.arguments]];
     [request setCountryCode:[self countryCodeFromArguments:command.arguments]];
     [request setMerchantIdentifier:[self merchantIdentifierFromArguments:command.arguments]];
     [request setRequiredBillingAddressFields:[self billingAddressRequirementFromArguments:command.arguments]];
     [request setRequiredShippingAddressFields:[self shippingAddressRequirementFromArguments:command.arguments]];
+    [request setShippingType:[self shippingTypeFromArguments:command.arguments]];
+    [request setShippingMethods:[self shippingMethodsFromArguments:command.arguments]];
+    [request setPaymentSummaryItems:[self itemsFromArguments:command.arguments]];
 
     NSLog(@"ApplePay request == %@", request);
 
