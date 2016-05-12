@@ -52,7 +52,6 @@ If the `successCallback` is called, you're good to go ahead and display the rela
 
 ### Example
 ```
-
 function onError(err) {
 	  console.log('onError', response);
 		alert(JSON.stringify(err));
@@ -74,6 +73,7 @@ ApplePay.makePaymentRequest(
 	  	{ identifier: 'By Sea', detail: 'Shipmates on a ship.', amount: 1.11 },
 	  	{ identifier: 'Airmail', detail: 'Ship it by airplane.', amount: 5.55 }
 	  ],
+		merchantIdentifier: 'merchant.apple.test',
 		currencyCode: 'GBP', // ISO 4217 currency code
 		countryCode: 'GB' // ISO 3166-1 alpha-2 country code - Merchant country code (!)
 	},

@@ -70,6 +70,12 @@
     return countryCode;
 }
 
+- (NSString *)merchantIdentifierFromArguments:(NSArray *)arguments
+{
+    NSString *merchantIdentifier = [[arguments objectAtIndex:0] objectForKey:@"merchantIdentifier"];
+    return merchantIdentifier;
+}
+
 - (NSString *)currencyCodeFromArguments:(NSArray *)arguments
 {
     NSString *currencyCode = [[arguments objectAtIndex:0] objectForKey:@"currencyCode"];
@@ -122,12 +128,6 @@
 {
     self.paymentCallbackId = command.callbackId;
 
-    if (merchantId == nil) {
-        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"Please call setMerchantId() with your Apple-given merchant ID."];
-        [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
-        return;
-    }
-
     NSLog(@"ApplePay canMakePayments == %s", [PKPaymentAuthorizationViewController canMakePayments]? "true" : "false");
     if ([PKPaymentAuthorizationViewController canMakePayments] == NO) {
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
@@ -136,9 +136,6 @@
     }
 
     PKPaymentRequest *request = [PKPaymentRequest new];
-
-    // Must be configured in Apple Developer Member Center
-    request.merchantIdentifier = merchantId;
 
     [request setPaymentSummaryItems:[self itemsFromArguments:command.arguments]];
 
@@ -158,6 +155,7 @@
 
     [request setCurrencyCode:[self currencyCodeFromArguments:command.arguments]];
     [request setCountryCode:[self countryCodeFromArguments:command.arguments]];
+    [request setMerchantIdentifier:[self merchantIdentifierFromArguments:command.arguments]];
 
     NSLog(@"ApplePay request == %@", request);
 
