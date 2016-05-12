@@ -64,6 +64,17 @@
     NSLog(@"ApplePay set merchant id to %@", merchantId);
 }
 
+- (NSString *)countryCodeFromArguments:(NSArray *)arguments
+{
+    NSString *countryCode = [[arguments objectAtIndex:0] objectForKey:@"countryCode"];
+    return countryCode;
+}
+
+- (NSString *)currencyCodeFromArguments:(NSArray *)arguments
+{
+    NSString *currencyCode = [[arguments objectAtIndex:0] objectForKey:@"currencyCode"];
+    return currencyCode;
+}
 
 - (NSArray *)itemsFromArguments:(NSArray *)arguments
 {
@@ -145,8 +156,8 @@
     request.requiredBillingAddressFields = PKAddressFieldAll;
     request.requiredShippingAddressFields = PKAddressFieldPostalAddress;
 
-    request.countryCode = @"US";
-    request.currencyCode = @"USD";
+    [request setCurrencyCode:[self currencyCodeFromArguments:command.arguments]];
+    [request setCountryCode:[self countryCodeFromArguments:command.arguments]];
 
     NSLog(@"ApplePay request == %@", request);
 
