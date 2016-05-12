@@ -175,10 +175,11 @@
 
          NSString *identifier = [desc objectForKey:@"identifier"];
          NSString *detail = [desc objectForKey:@"detail"];
+         NSString *label = [desc objectForKey:@"label"];
 
          NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[[desc objectForKey:@"amount"] decimalValue]];
 
-         PKPaymentSummaryItem *newMethod = [self shippingMethodWithIdentifier:identifier detail:detail amount:amount];
+         PKPaymentSummaryItem *newMethod = [self shippingMethodWithIdentifier:identifier detail:detail label:label amount:amount];
 
          [shippingMethods addObject:newMethod];
      }
@@ -252,13 +253,13 @@
 }
 
 
-- (PKShippingMethod *)shippingMethodWithIdentifier:(NSString *)idenfifier detail:(NSString *)detail amount:(NSDecimalNumber *)amount
+- (PKShippingMethod *)shippingMethodWithIdentifier:(NSString *)idenfifier detail:(NSString *)detail label:(NSString *)detail amount:(NSDecimalNumber *)amount
 {
     PKShippingMethod *shippingMethod = [PKShippingMethod new];
     shippingMethod.identifier = idenfifier;
-    shippingMethod.detail = @"";
+    shippingMethod.detail = detail;
     shippingMethod.amount = amount;
-    shippingMethod.label = detail;
+    shippingMethod.label = label;
 
     return shippingMethod;
 }

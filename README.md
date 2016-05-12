@@ -70,9 +70,9 @@ ApplePay.makePaymentRequest(
 	      { label: 'item 2', amount: 2.22 }
 	  ],
 	  shippingMethods: [
-	  	{ identifier: 'Next Day', detail: 'Arrives tomorrow by 5pm.', amount: 3.99 },
-	  	{ identifier: 'Standard', detail: 'Arrive by Friday.', amount: 4.99 },
-			{ identifier: 'Saturday Delivery', detail: 'Arrive by 5pm this Saturday.', amount: 6.99 }
+	  	{ identifier: 'NextDay', label: 'Next Day', detail: 'Arrives tomorrow by 5pm.', amount: 3.99 },
+	  	{ identifier: 'Standard', label: 'Standard', detail: 'Arrive by Friday.', amount: 4.99 },
+			{ identifier: 'SaturdayDelivery', label: 'Saturday', detail: 'Arrive by 5pm this Saturday.', amount: 6.99 }
 	  ],
 		merchantIdentifier: 'merchant.apple.test',
 		currencyCode: 'GBP', // ISO 4217 currency code
