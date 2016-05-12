@@ -6,10 +6,12 @@ with newer versions of Cordova.  Originally used for internal use.
 
 ## Installation
 ```
-$ cordova plugin add git@bitbucket.org:username/cordova-plugin-applepay.git
+$ cordova plugin add @private/cordova-plugin-applepay
 ```
 
-The plugin exposes the `org.cordova.applepay` plugin, accessible in the browser as `window.ApplePay`.
+Install the plugin using Cordova 6 and above, which is based on npm. The plugin exposes the `org.cordova.applepay` plugin, accessible in the browser as `window.ApplePay`.
+
+To make changes to this plugin, update the version in the `package.json` as required and run `npm publish`.
 
 ## Supported Platforms
 
