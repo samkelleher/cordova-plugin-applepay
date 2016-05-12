@@ -21,7 +21,7 @@
 
 - (void)canMakePayments:(CDVInvokedUrlCommand*)command
 {
-        if ([PKPaymentAuthorizationViewController canMakePayments]) {
+    if ([PKPaymentAuthorizationViewController canMakePayments]) {
         if ((floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_8_0)) {
             CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
             [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
@@ -174,20 +174,20 @@
     NSMutableArray *shippingMethods = [[NSMutableArray alloc] init];
 
 
-     for (NSDictionary *desc in shippingDescriptions) {
+    for (NSDictionary *desc in shippingDescriptions) {
 
-         NSString *identifier = [desc objectForKey:@"identifier"];
-         NSString *detail = [desc objectForKey:@"detail"];
-         NSString *label = [desc objectForKey:@"label"];
+        NSString *identifier = [desc objectForKey:@"identifier"];
+        NSString *detail = [desc objectForKey:@"detail"];
+        NSString *label = [desc objectForKey:@"label"];
 
-         NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[[desc objectForKey:@"amount"] decimalValue]];
+        NSDecimalNumber *amount = [NSDecimalNumber decimalNumberWithDecimal:[[desc objectForKey:@"amount"] decimalValue]];
 
-         PKPaymentSummaryItem *newMethod = [self shippingMethodWithIdentifier:identifier detail:detail label:label amount:amount];
+        PKPaymentSummaryItem *newMethod = [self shippingMethodWithIdentifier:identifier detail:detail label:label amount:amount];
 
-         [shippingMethods addObject:newMethod];
-     }
+        [shippingMethods addObject:newMethod];
+    }
 
-     return shippingMethods;
+    return shippingMethods;
 }
 
 - (PKPaymentAuthorizationStatus)paymentAuthorizationStatusFromArgument:(NSString *)paymentAuthorizationStatus
@@ -287,21 +287,104 @@
 - (NSDictionary*) formatPaymentForApplication:(PKPayment *)payment {
     NSString *paymentData = [payment.token.paymentData base64EncodedStringWithOptions:0];
 
-    NSDictionary *response = @{
-                               @"paymentData":paymentData,
-                               @"transactionIdentifier":payment.token.transactionIdentifier
-                               };
+    //    NSDictionary *response = @{
+    //                               @"paymentData":paymentData,
+    //                               @"transactionIdentifier":payment.token.transactionIdentifier
+    //                               };
 
-    // Different version of iOS present the billing/shipping addresses in different ways.
+    NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
+
+    [response setObject:paymentData  forKey:@"paymentData"];
+    [response setObject:payment.token.transactionIdentifier  forKey:@"transactionIdentifier"];
+
+    // Different version of iOS present the billing/shipping addresses in different ways. Pain.
     if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
-        ABRecordRef billingAddress = payment.billingAddress;
-        if (billingAddress) {
 
-        }
 
-    } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){8, 0, 0}]) {
         PKContact *billingContact = payment.billingContact;
         if (billingContact) {
+            if (billingContact.emailAddress) {
+                [response setObject:billingContact.emailAddress forKey:@"billingEmailAddress"];
+            }
+
+            if (billingContact.supplementarySubLocality) {
+                [response setObject:billingContact.supplementarySubLocality forKey:@"billingSupplementarySubLocality"];
+            }
+
+            if (billingContact.postalAddress) {
+
+                if (billingContact.postalAddress.street) {
+                    [response setObject:billingContact.postalAddress.street forKey:@"billingAddressStreet"];
+                }
+
+                if (billingContact.postalAddress.city) {
+                    [response setObject:billingContact.postalAddress.city forKey:@"billingAddressCity"];
+                }
+
+                if (billingContact.postalAddress.state) {
+                    [response setObject:billingContact.postalAddress.state forKey:@"billingAddressState"];
+                }
+
+
+                if (billingContact.postalAddress.postalCode) {
+                    [response setObject:billingContact.postalAddress.postalCode forKey:@"billingPostalCode"];
+                }
+
+                if (billingContact.postalAddress.country) {
+                    [response setObject:billingContact.postalAddress.country forKey:@"billingCountry"];
+                }
+
+                if (billingContact.postalAddress.ISOCountryCode) {
+                    [response setObject:billingContact.postalAddress.ISOCountryCode forKey:@"billingISOCountryCode"];
+                }
+
+            }
+        }
+
+        PKContact *shippingContact = payment.shippingContact;
+        if (shippingContact) {
+            if (shippingContact.emailAddress) {
+                [response setObject:shippingContact.emailAddress forKey:@"shippingEmailAddress"];
+            }
+
+            if (shippingContact.supplementarySubLocality) {
+                [response setObject:shippingContact.supplementarySubLocality forKey:@"bshippingSupplementarySubLocality"];
+            }
+
+            if (shippingContact.postalAddress) {
+
+                if (shippingContact.postalAddress.street) {
+                    [response setObject:shippingContact.postalAddress.street forKey:@"shippingAddressStreet"];
+                }
+
+                if (shippingContact.postalAddress.city) {
+                    [response setObject:shippingContact.postalAddress.city forKey:@"shippingAddressCity"];
+                }
+
+                if (shippingContact.postalAddress.state) {
+                    [response setObject:shippingContact.postalAddress.state forKey:@"shippingAddressState"];
+                }
+
+                if (shippingContact.postalAddress.postalCode) {
+                    [response setObject:shippingContact.postalAddress.postalCode forKey:@"shippingPostalCode"];
+                }
+
+                if (shippingContact.postalAddress.country) {
+                    [response setObject:shippingContact.postalAddress.country forKey:@"shippingCountry"];
+                }
+
+                if (shippingContact.postalAddress.ISOCountryCode) {
+                    [response setObject:shippingContact.postalAddress.ISOCountryCode forKey:@"shippingISOCountryCode"];
+                }
+
+            }
+        }
+
+
+    } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){8, 0, 0}]) {
+
+        ABRecordRef billingAddress = payment.billingAddress;
+        if (billingAddress) {
 
         }
 
@@ -320,7 +403,7 @@
     if (completion) {
         self.paymentAuthorizationBlock = completion;
     }
-        NSDictionary* response = [self formatPaymentForApplication:payment];
+    NSDictionary* response = [self formatPaymentForApplication:payment];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response];
     [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
