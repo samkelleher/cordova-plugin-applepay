@@ -47,28 +47,37 @@ If the `successCallback` is called, you're good to go ahead and display the rela
 
 ### Parameters
 
-- __order.items__: Array of item objects with form `{ label: "Item 1", amount: 1.11 }`
-- __order.shippingMethods__: Array of item objects with form `{ identifier: "My Method", detail: "Ship by method 1", amount: 1.11 }`
+- __order.items__: Array of item objects with form `{ label: 'Item 1', amount: 1.11 }`
+- __order.shippingMethods__: Array of item objects with form `{ identifier: 'My Method', detail: 'Ship by method 1', amount: 1.11 }`
 
 ### Example
 ```
-	ApplePay.setMerchantId('merchant.apple.test');
 
-    function onError(err) {
-        alert(JSON.stringify(err));
-    }
-    function onSuccess(response) {
-        alert(response);
-    }
+function onError(err) {
+	  console.log('onError', response);
+		alert(JSON.stringify(err));
+}
+function onSuccess(response) {
+	  console.log('onSuccess', response);
+		alert(response);
+}
 
-    ApplePay.makePaymentRequest(onSuccess, onError, {
-    	items: [
-	        { label: "item 1", amount: 1.11 },
-	        { label: "item 2", amount: 2.22 }
-	    ],
-	    shippingMethods: [
-	    	{ identifier: "By Sea", detail: "Shipmates on a ship.", amount: 1.11 },
-	    	{ identifier: "Airmail", detail: "Ship it by airplane.", amount: 5.55 }
-	    ]
-	);
+ApplePay.setMerchantId('merchant.apple.test', onSuccess, onError);
+
+ApplePay.makePaymentRequest(
+	{
+		items: [
+	      { label: 'item 1', amount: 1.11 },
+	      { label: 'item 2', amount: 2.22 }
+	  ],
+	  shippingMethods: [
+	  	{ identifier: 'By Sea', detail: 'Shipmates on a ship.', amount: 1.11 },
+	  	{ identifier: 'Airmail', detail: 'Ship it by airplane.', amount: 5.55 }
+	  ],
+		currencyCode: 'GBP', // ISO 4217 currency code
+		countryCode: 'GB' // ISO 3166-1 alpha-2 country code - Merchant country code (!)
+	},
+	onSuccess,
+	onError
+);
 ```
