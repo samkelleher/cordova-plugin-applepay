@@ -6,7 +6,6 @@
   "scripts": {
 
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/username/cordova-plugin-applepay.git"
