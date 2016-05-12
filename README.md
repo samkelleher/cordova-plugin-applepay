@@ -115,12 +115,14 @@ ApplePay.makePaymentRequest(
 ```
 
 Valid values for the `shippingType` are:
+
  * `shipping` (default)
  * `delivery`
  * `store`
  * `service`
 
 Valid values for the `billingAddressRequirement` and `shippingAddressRequirement` properties are:
+
  * `none` (default)
  * `all`
  * `postcode`
