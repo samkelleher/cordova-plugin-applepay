@@ -51,6 +51,9 @@ If the `successCallback` is called, you're good to go ahead and display the rela
 - __order.shippingMethods__: Array of item objects with form `{ identifier: 'My Method', detail: 'Ship by method 1', amount: 1.11 }`
 
 ### Example
+
+The order request object closely follows the format of the `PKPaymentRequest` class and thus its documentation will make excellent reading.
+
 ```
 function onError(err) {
 	  console.log('onError', response);
@@ -65,21 +68,46 @@ ApplePay.setMerchantId('merchant.apple.test', onSuccess, onError);
 
 ApplePay.makePaymentRequest(
 	{
-		items: [
-	      { label: 'item 1', amount: 1.11 },
-	      { label: 'item 2', amount: 2.22 }
-	  ],
-	  shippingMethods: [
-	  	{ identifier: 'NextDay', label: 'Next Day', detail: 'Arrives tomorrow by 5pm.', amount: 3.99 },
-	  	{ identifier: 'Standard', label: 'Standard', detail: 'Arrive by Friday.', amount: 4.99 },
-			{ identifier: 'SaturdayDelivery', label: 'Saturday', detail: 'Arrive by 5pm this Saturday.', amount: 6.99 }
-	  ],
-		merchantIdentifier: 'merchant.apple.test',
-		currencyCode: 'GBP', // ISO 4217 currency code
-		countryCode: 'GB' // ISO 3166-1 alpha-2 country code - Merchant country code (!),
-		billingAddressRequirement: 'none',
-		shippingAddressRequirement: 'none',
-		shippingType: 'shipping'
+    items: [
+        {
+            label: '3 x Basket Items',
+            amount: 49.99
+        },
+        {
+            label: 'Next Day Delivery',
+            amount: 3.99
+        },
+				{
+            label: 'My Fashion Company',
+            amount: 53.98
+        }
+    ],
+    shippingMethods: [
+        {
+            identifier: 'NextDay',
+            label: 'NextDay',
+            detail: 'Arrives tomorrow by 5pm.',
+            amount: 3.99
+        },
+        {
+            identifier: 'Standard',
+            label: 'Standard',
+            detail: 'Arrive by Friday.',
+            amount: 4.99
+        },
+        {
+            identifier: 'SaturdayDelivery',
+            label: 'Saturday',
+            detail: 'Arrive by 5pm this Saturday.',
+            amount: 6.99
+        }
+    ],
+    merchantIdentifier: 'merchant.apple.test',
+    currencyCode: 'GBP',
+    countryCode: 'GB'
+    billingAddressRequirement: 'none',
+    shippingAddressRequirement: 'none',
+    shippingType: 'shipping'
 	},
 	onSuccess,
 	onError

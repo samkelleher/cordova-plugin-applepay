@@ -253,7 +253,7 @@
 }
 
 
-- (PKShippingMethod *)shippingMethodWithIdentifier:(NSString *)idenfifier detail:(NSString *)detail label:(NSString *)detail amount:(NSDecimalNumber *)amount
+- (PKShippingMethod *)shippingMethodWithIdentifier:(NSString *)idenfifier detail:(NSString *)detail label:(NSString *)label amount:(NSDecimalNumber *)amount
 {
     PKShippingMethod *shippingMethod = [PKShippingMethod new];
     shippingMethod.identifier = idenfifier;
