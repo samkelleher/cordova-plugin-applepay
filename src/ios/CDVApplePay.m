@@ -62,6 +62,9 @@
 {
     merchantId = [command.arguments objectAtIndex:0];
     NSLog(@"ApplePay set merchant id to %@", merchantId);
+
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
+    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (NSString *)countryCodeFromArguments:(NSArray *)arguments
@@ -187,6 +190,46 @@
      return shippingMethods;
 }
 
+- (PKPaymentAuthorizationStatus)paymentAuthorizationStatusFromArgument:(NSString *)paymentAuthorizationStatus
+{
+
+    if ([paymentAuthorizationStatus isEqualToString:@"success"]) {
+        return PKPaymentAuthorizationStatusSuccess;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"failure"]) {
+        return PKPaymentAuthorizationStatusFailure;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"invalid-billing-address"]) {
+        return PKPaymentAuthorizationStatusInvalidBillingPostalAddress;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"invalid-shipping-address"]) {
+        return PKPaymentAuthorizationStatusInvalidShippingPostalAddress;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"invalid-shipping-contact"]) {
+        return PKPaymentAuthorizationStatusInvalidShippingContact;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"require-pin"]) {
+        return PKPaymentAuthorizationStatusPINRequired;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"incorrect-pin"]) {
+        return PKPaymentAuthorizationStatusPINIncorrect;
+    } else if ([paymentAuthorizationStatus isEqualToString:@"locked-pin"]) {
+        return PKPaymentAuthorizationStatusPINLockout;
+    }
+
+    return PKPaymentAuthorizationStatusFailure;
+}
+
+- (void)completeLastTransaction:(CDVInvokedUrlCommand*)command
+{
+    if (self.paymentAuthorizationBlock) {
+
+        NSString *paymentAuthorizationStatusString = [command.arguments objectAtIndex:0];
+        NSLog(@"ApplePay completeLastTransaction == %@", paymentAuthorizationStatusString);
+
+        PKPaymentAuthorizationStatus paymentAuthorizationStatus = [self paymentAuthorizationStatusFromArgument:paymentAuthorizationStatusString];
+        self.paymentAuthorizationBlock(paymentAuthorizationStatus);
+
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"Payment status applied."];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+
+    }
+}
+
 - (void)makePaymentRequest:(CDVInvokedUrlCommand*)command
 {
     self.paymentCallbackId = command.callbackId;
@@ -246,9 +289,15 @@
                                 completion:(void (^)(PKPaymentAuthorizationStatus status))completion
 {
     NSLog(@"CDVApplePay: didAuthorizePayment");
-    NSString *data = [payment.token.paymentData base64EncodedStringWithOptions:0];
+    NSString *paymentData = [payment.token.paymentData base64EncodedStringWithOptions:0];
 
-    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"message":data}];
+    NSDictionary* response = @{@"paymentData":paymentData};
+
+    if (completion) {
+        self.paymentAuthorizationBlock = completion;
+    }
+
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response];
     [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
 }
 

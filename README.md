@@ -22,6 +22,7 @@ To make changes to this plugin, update the version in the `package.json` as requ
 - ApplePay.setMerchantId
 - ApplePay.makePaymentRequest
 - ApplePay.canMakePayments
+- ApplePay.completeLastTransaction
 
 ## ApplePay.setMerchantId
 Set your Apple-given merchant ID.
