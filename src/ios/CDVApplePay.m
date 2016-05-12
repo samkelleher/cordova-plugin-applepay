@@ -133,7 +133,12 @@
 
     [request setShippingMethods:[self shippingMethodsFromArguments:command.arguments]];
 
-    request.supportedNetworks = supportedPaymentNetworks;
+    if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
+        request.supportedNetworks = supportedPaymentNetworks;
+    } else {
+        request.supportedNetworks = supportedPaymentNetworks;
+    }
+
     request.merchantCapabilities = merchantCapabilities;
 
     // What type of info you need (eg email, phone, address, etc);
