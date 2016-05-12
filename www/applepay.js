@@ -15,6 +15,10 @@ var ApplePay = {
 
     makePaymentRequest: function(order, successCallback, errorCallback) {
         exec(successCallback, errorCallback, 'ApplePay', 'makePaymentRequest', [order]);
+    },
+
+    completeLastTransaction: function(status, successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'ApplePay', 'completeLastTransaction', [order]);
     }
 
 };

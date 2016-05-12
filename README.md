@@ -48,10 +48,9 @@ If the `successCallback` is called, you're good to go ahead and display the rela
   ApplePay.canMakePayments(successCallback, errorCallback);
 ```
 
-### Parameters
-
-- __order.items__: Array of item objects with form `{ label: 'Item 1', amount: 1.11 }`
-- __order.shippingMethods__: Array of item objects with form `{ identifier: 'My Method', detail: 'Ship by method 1', amount: 1.11 }`
+## ApplePay.completeLastTransaction
+Once the `successCallback` of the `makePaymentRequest` has been called, the device will be waiting for a completion event.
+This means, that the application must proceed with the token authorisation and return a success, failure, or other validation error. Once this has been passed back, the Apple Pay sheet will be dismissed via an animation.
 
 ### Example
 
@@ -132,3 +131,10 @@ Valid values for the `billingAddressRequirement` and `shippingAddressRequirement
  * `name`
  * `email`
  * `phone`
+
+### Completing The Transaction
+```
+ApplePay.completeLastTransaction('success');
+```
+
+Once you have obtained the authorization with the provided token, you can dismiss or invalidate the Apple Pay sheet by calling `completeLastTransaction` with a status string which can be `success`, `failure`, `invalid-billing-address`, `invalid-shipping-address`, `invalid-shipping-contact`, `require-pin`, `incorrect-pin`, `locked-pin`.
