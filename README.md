@@ -75,9 +75,19 @@ ApplePay.makePaymentRequest(
 	  ],
 		merchantIdentifier: 'merchant.apple.test',
 		currencyCode: 'GBP', // ISO 4217 currency code
-		countryCode: 'GB' // ISO 3166-1 alpha-2 country code - Merchant country code (!)
+		countryCode: 'GB' // ISO 3166-1 alpha-2 country code - Merchant country code (!),
+		billingAddressRequirement: 'all',
+		shippingAddressRequirement: 'all'
 	},
 	onSuccess,
 	onError
 );
 ```
+
+Valid values for the `billingAddressRequirement` and `shippingAddressRequirement` properties are:
+ - `none`
+ - `all`
+ - `postcode`
+ - `name`
+ - `email`
+ - `phone`

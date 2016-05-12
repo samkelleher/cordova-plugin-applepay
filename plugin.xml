@@ -3,13 +3,12 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.cordova.applepay"
-      version="0.0.2">
+      version="2.0.0">
 
     <name>Apple Pay</name>
-    <description>Implements ApplePay request.</description>
+    <description>Implements Apple Pay.</description>
     <keywords>cordova,payment,apple pay</keywords>
     <repo>git@bitbucket.org:username/cordova-plugin-applepay.git</repo>
-
 
     <platform name="ios">
 

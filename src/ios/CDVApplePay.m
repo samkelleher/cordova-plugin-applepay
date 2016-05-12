@@ -82,6 +82,50 @@
     return currencyCode;
 }
 
+- (PKAddressField)billingAddressRequirementFromArguments:(NSArray *)arguments
+{
+    NSString *billingAddressRequirement = [[arguments objectAtIndex:0] objectForKey:@"billingAddressRequirement"];
+
+    if ([billingAddressRequirement isEqualToString:@"none"]) {
+        return PKAddressFieldNone;
+    } else if ([billingAddressRequirement isEqualToString:@"all"]) {
+        return PKAddressFieldAll;
+    } else if ([billingAddressRequirement isEqualToString:@"postcode"]) {
+        return PKAddressFieldPostalAddress;
+    } else if ([billingAddressRequirement isEqualToString:@"name"]) {
+        return PKAddressFieldName;
+    } else if ([billingAddressRequirement isEqualToString:@"email"]) {
+        return PKAddressFieldEmail;
+    } else if ([billingAddressRequirement isEqualToString:@"phone"]) {
+        return PKAddressFieldPhone;
+    }
+
+
+    return PKAddressFieldNone;
+}
+
+- (PKAddressField)shippingAddressRequirementFromArguments:(NSArray *)arguments
+{
+    NSString *shippingAddressRequirement = [[arguments objectAtIndex:0] objectForKey:@"shippingAddressRequirement"];
+
+    if ([shippingAddressRequirement isEqualToString:@"none"]) {
+        return PKAddressFieldNone;
+    } else if ([shippingAddressRequirement isEqualToString:@"all"]) {
+        return PKAddressFieldAll;
+    } else if ([shippingAddressRequirement isEqualToString:@"postcode"]) {
+        return PKAddressFieldPostalAddress;
+    } else if ([shippingAddressRequirement isEqualToString:@"name"]) {
+        return PKAddressFieldName;
+    } else if ([shippingAddressRequirement isEqualToString:@"email"]) {
+        return PKAddressFieldEmail;
+    } else if ([shippingAddressRequirement isEqualToString:@"phone"]) {
+        return PKAddressFieldPhone;
+    }
+
+
+    return PKAddressFieldNone;
+}
+
 - (NSArray *)itemsFromArguments:(NSArray *)arguments
 {
     NSArray *itemDescriptions = [[arguments objectAtIndex:0] objectForKey:@"items"];
@@ -149,13 +193,11 @@
 
     request.merchantCapabilities = merchantCapabilities;
 
-    // What type of info you need (eg email, phone, address, etc);
-    request.requiredBillingAddressFields = PKAddressFieldAll;
-    request.requiredShippingAddressFields = PKAddressFieldPostalAddress;
-
     [request setCurrencyCode:[self currencyCodeFromArguments:command.arguments]];
     [request setCountryCode:[self countryCodeFromArguments:command.arguments]];
     [request setMerchantIdentifier:[self merchantIdentifierFromArguments:command.arguments]];
+    [request setRequiredBillingAddressFields:[self billingAddressRequirementFromArguments:command.arguments]];
+    [request setRequiredShippingAddressFields:[self shippingAddressRequirementFromArguments:command.arguments]];
 
     NSLog(@"ApplePay request == %@", request);
 
