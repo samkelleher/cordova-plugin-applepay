@@ -10,11 +10,11 @@
 
     // Set these to the payment cards accepted.
     // They will nearly always be the same.
-    self.supportedPaymentNetworks = @[PKPaymentNetworkVisa, PKPaymentNetworkMasterCard, PKPaymentNetworkAmex];
+    supportedPaymentNetworks = @[PKPaymentNetworkVisa, PKPaymentNetworkMasterCard, PKPaymentNetworkAmex];
 
     // Set the capabilities that your merchant supports
     // Adyen for example, only supports the 3DS one.
-    self.merchantCapabilities = PKMerchantCapability3DS;// PKMerchantCapabilityEMV;
+    merchantCapabilities = PKMerchantCapability3DS;// PKMerchantCapabilityEMV;
 
 
 }
@@ -27,7 +27,7 @@
             [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
             return;
         } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
-            if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:self.supportedPaymentNetworks capabilities:(self.merchantCapabilities)]) {
+            if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:supportedPaymentNetworks capabilities:(merchantCapabilities)]) {
                 CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
                 [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
                 return;
@@ -37,7 +37,7 @@
                 return;
             }
         } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){8, 0, 0}]) {
-            if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:self.supportedPaymentNetworks]) {
+            if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:supportedPaymentNetworks]) {
                 CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
                 [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
                 return;
@@ -133,8 +133,8 @@
 
     [request setShippingMethods:[self shippingMethodsFromArguments:command.arguments]];
 
-    request.supportedNetworks = self.supportedPaymentNetworks;
-    request.merchantCapabilities = self.merchantCapabilities;
+    request.supportedNetworks = supportedPaymentNetworks;
+    request.merchantCapabilities = merchantCapabilities;
 
     // What type of info you need (eg email, phone, address, etc);
     request.requiredBillingAddressFields = PKAddressFieldAll;
