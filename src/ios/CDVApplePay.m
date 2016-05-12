@@ -241,13 +241,13 @@
         return;
     }
 
+    // reset any lingering callbacks, incase the previous payment failed.
+    self.paymentAuthorizationBlock = nil;
+
     PKPaymentRequest *request = [PKPaymentRequest new];
 
-    if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
-        request.supportedNetworks = supportedPaymentNetworks;
-    } else {
-        request.supportedNetworks = supportedPaymentNetworks;
-    }
+    // Different version of iOS support different networks, (ie Discover card is iOS9+; not part of my project, so ignoring).
+    request.supportedNetworks = supportedPaymentNetworks;
 
     request.merchantCapabilities = merchantCapabilities;
 
@@ -284,18 +284,43 @@
     [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
 }
 
+- (NSDictionary*) formatPaymentForApplication:(PKPayment *)payment {
+    NSString *paymentData = [payment.token.paymentData base64EncodedStringWithOptions:0];
+
+    NSDictionary *response = @{
+                               @"paymentData":paymentData,
+                               @"transactionIdentifier":payment.token.transactionIdentifier
+                               };
+
+    // Different version of iOS present the billing/shipping addresses in different ways.
+    if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
+        ABRecordRef billingAddress = payment.billingAddress;
+        if (billingAddress) {
+
+        }
+
+    } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){8, 0, 0}]) {
+        PKContact *billingContact = payment.billingContact;
+        if (billingContact) {
+
+        }
+
+    }
+
+
+    return response;
+}
+
 - (void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller
                        didAuthorizePayment:(PKPayment *)payment
                                 completion:(void (^)(PKPaymentAuthorizationStatus status))completion
 {
     NSLog(@"CDVApplePay: didAuthorizePayment");
-    NSString *paymentData = [payment.token.paymentData base64EncodedStringWithOptions:0];
-
-    NSDictionary* response = @{@"paymentData":paymentData};
 
     if (completion) {
         self.paymentAuthorizationBlock = completion;
     }
+        NSDictionary* response = [self formatPaymentForApplication:payment];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response];
     [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
