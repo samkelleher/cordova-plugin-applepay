@@ -3,7 +3,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.cordova.applepay"
-      version="2.0.0">
+      version="2.1.0">
 
     <name>Apple Pay</name>
     <description>Implements Apple Pay.</description>
