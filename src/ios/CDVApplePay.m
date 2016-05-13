@@ -135,15 +135,6 @@
     }
 }
 
-- (void)setMerchantId:(CDVInvokedUrlCommand*)command
-{
-    merchantId = [command.arguments objectAtIndex:0];
-    NSLog(@"ApplePay set merchant id to %@", merchantId);
-
-    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
-    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-}
-
 - (NSString *)countryCodeFromArguments:(NSArray *)arguments
 {
     NSString *countryCode = [[arguments objectAtIndex:0] objectForKey:@"countryCode"];

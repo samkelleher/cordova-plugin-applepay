@@ -19,17 +19,9 @@ To make changes to this plugin, update the version in the `package.json` as requ
 
 ## Methods
 
-- ApplePay.setMerchantId
 - ApplePay.makePaymentRequest
 - ApplePay.canMakePayments
 - ApplePay.completeLastTransaction
-
-## ApplePay.setMerchantId
-Set your Apple-given merchant ID.
-
-```
-	ApplePay.setMerchantId(merchantId, successCallback, errorCallback);
-```
 
 ## ApplePay.makePaymentRequest
 Request a payment with Apple Pay.
@@ -65,8 +57,6 @@ function onSuccess(response) {
 	  console.log('onSuccess', response);
 		alert(response);
 }
-
-ApplePay.setMerchantId('merchant.apple.test', onSuccess, onError);
 
 ApplePay.makePaymentRequest(
 	{

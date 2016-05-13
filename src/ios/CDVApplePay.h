@@ -7,7 +7,6 @@ typedef void (^ARAuthorizationBlock)(PKPaymentAuthorizationStatus);
 
 @interface CDVApplePay : CDVPlugin <PKPaymentAuthorizationViewControllerDelegate>
 {
-    NSString *merchantId;
     PKMerchantCapability merchantCapabilities;
     NSArray<NSString *>* supportedPaymentNetworks;
 }
@@ -16,7 +15,6 @@ typedef void (^ARAuthorizationBlock)(PKPaymentAuthorizationStatus);
 
 @property (nonatomic, strong) NSString* paymentCallbackId;
 
-- (void)setMerchantId:(CDVInvokedUrlCommand*)command;
 - (void)makePaymentRequest:(CDVInvokedUrlCommand*)command;
 - (void)canMakePayments:(CDVInvokedUrlCommand*)command;
 - (void)completeLastTransaction:(CDVInvokedUrlCommand*)command;
