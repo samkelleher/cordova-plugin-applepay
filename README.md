@@ -2,7 +2,7 @@
 > An adapted Cordova plugin to provide Apple Pay functionality.
 
 Updated to provide additional data access to the plugin, test calls, and compatibility
-with newer versions of Cordova.  Originally used for internal use.
+with newer versions of Cordova. Uses a Promise based interface in JavaScript.
 
 ## Installation
 ```
@@ -19,9 +19,9 @@ To make changes to this plugin, update the version in the `package.json` as requ
 - Requires Cordova 6 running iOS Platform 4.1.1
 
 ## Methods
-
-- ApplePay.makePaymentRequest
+The methods available all return promises, or accept success and error callbacks.
 - ApplePay.canMakePayments
+- ApplePay.makePaymentRequest
 - ApplePay.completeLastTransaction
 
 ## ApplePay.makePaymentRequest
@@ -38,7 +38,14 @@ If the `errorCallback` is called, the device does not support Apple Pay. See the
 If the `successCallback` is called, you're good to go ahead and display the related UI.
 
 ```
-ApplePay.canMakePayments(successCallback, errorCallback);
+ApplePay.canMakePayments()
+    .then(() => {
+        // Apple Pay is enabled and a supported card is setup.
+    })
+    .catch((message) => {
+        // The device is too old for Apple Pay
+        // It's a good device, but no *supported* cards have been registered.
+    });
 ```
 
 ## ApplePay.completeLastTransaction
@@ -50,61 +57,61 @@ This means, that the application must proceed with the token authorisation and r
 The order request object closely follows the format of the `PKPaymentRequest` class and thus its documentation will make excellent reading.
 
 ```
-function onError(err) {
-	  console.log('onError', response);
-		alert(JSON.stringify(err));
-}
-function onSuccess(response) {
-	  console.log('onSuccess', response);
-		alert(response);
-}
-
 ApplePay.makePaymentRequest(
-	{
-    items: [
-        {
-            label: '3 x Basket Items',
-            amount: 49.99
-        },
-        {
-            label: 'Next Day Delivery',
-            amount: 3.99
-        },
-				{
-            label: 'My Fashion Company',
-            amount: 53.98
-        }
-    ],
-    shippingMethods: [
-        {
-            identifier: 'NextDay',
-            label: 'NextDay',
-            detail: 'Arrives tomorrow by 5pm.',
-            amount: 3.99
-        },
-        {
-            identifier: 'Standard',
-            label: 'Standard',
-            detail: 'Arrive by Friday.',
-            amount: 4.99
-        },
-        {
-            identifier: 'SaturdayDelivery',
-            label: 'Saturday',
-            detail: 'Arrive by 5pm this Saturday.',
-            amount: 6.99
-        }
-    ],
-    merchantIdentifier: 'merchant.apple.test',
-    currencyCode: 'GBP',
-    countryCode: 'GB'
-    billingAddressRequirement: 'none',
-    shippingAddressRequirement: 'none',
-    shippingType: 'shipping'
-	},
-	onSuccess,
-	onError
-);
+    {
+          items: [
+              {
+                  label: '3 x Basket Items',
+                  amount: 49.99
+              },
+              {
+                  label: 'Next Day Delivery',
+                  amount: 3.99
+              },
+                      {
+                  label: 'My Fashion Company',
+                  amount: 53.98
+              }
+          ],
+          shippingMethods: [
+              {
+                  identifier: 'NextDay',
+                  label: 'NextDay',
+                  detail: 'Arrives tomorrow by 5pm.',
+                  amount: 3.99
+              },
+              {
+                  identifier: 'Standard',
+                  label: 'Standard',
+                  detail: 'Arrive by Friday.',
+                  amount: 4.99
+              },
+              {
+                  identifier: 'SaturdayDelivery',
+                  label: 'Saturday',
+                  detail: 'Arrive by 5pm this Saturday.',
+                  amount: 6.99
+              }
+          ],
+          merchantIdentifier: 'merchant.apple.test',
+          currencyCode: 'GBP',
+          countryCode: 'GB'
+          billingAddressRequirement: 'none',
+          shippingAddressRequirement: 'none',
+          shippingType: 'shipping'
+    })
+    .then((token) => {
+        // The user has authorized the payment.
+
+        // Handle the token, asynchronously, i.e. pass to your merchant bank to action the payment, then once finished, depending on the outcome:
+
+        // Displays the 'done' green tick and closes the sheet.
+        ApplePay.completeLastTransaction('success');
+
+    })
+    .catch((e) => {
+        // Failed to open the Apple Pay sheet, or the user cancelled the payment.
+    })
 ```
 
 Valid values for the `shippingType` are:
