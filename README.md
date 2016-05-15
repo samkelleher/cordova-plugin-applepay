@@ -25,10 +25,7 @@ The methods available all return promises, or accept success and error callbacks
 - ApplePay.completeLastTransaction
 
 ## ApplePay.canMakePayments
-Detects if the current iDevice supports Apple Pay and has any capable cards registered.
-
-If the `errorCallback` is called, the device does not support Apple Pay. See the message to see why.
-If the `successCallback` is called, you're good to go ahead and display the related UI.
+Detects if the current iDevice supports Apple Pay and has any *capable* cards registered.
 
 ```
 ApplePay.canMakePayments()
@@ -66,7 +63,7 @@ You can dismiss or invalidate the Apple Pay sheet by calling `completeLastTransa
 
 ### Payment Flow Example
 
-The order request object closely follows the format of the `PKPaymentRequest` class and thus its documentation will make excellent reading.
+The order request object closely follows the format of the `PKPaymentRequest` class and thus its [documentation](https://developer.apple.com/library/ios/documentation/PassKit/Reference/PKPaymentRequest_Ref/index.html#//apple_ref/occ/cl/PKPaymentRequest) will make excellent reading.
 
 ```
 ApplePay.makePaymentRequest(
