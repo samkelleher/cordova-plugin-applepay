@@ -4,14 +4,18 @@
 Updated to provide additional data access to the plugin, test calls, and compatibility
 with newer versions of Cordova. Uses a Promise based interface in JavaScript.
 
+This plugin is compatible with all payment processors (eg Stripe etc) because
+the token is handled back your JavaScript application to pass to which ever payment
+processor you use.
+
 ## Installation
 ```
 $ cordova plugin add cordova-applepay
 ```
 
-Install the plugin using Cordova 6 and above, which is based on npm. The plugin exposes the `org.cordova.applepay` plugin, accessible in the browser as `window.ApplePay`.
+Install the plugin using Cordova 6 and above, which is based on npm. The plugin
+exposes the `window.ApplePay` global in the browser.
 
-To make changes to this plugin, update the version in the `package.json` as required and run `npm publish`.
 
 ## Supported Platforms
 
@@ -112,7 +116,12 @@ ApplePay.makePaymentRequest(
     .then((token) => {
         // The user has authorized the payment.
 
-        // Handle the token, asynchronously, i.e. pass to your merchant bank to action the payment, then once finished, depending on the outcome:
+        // Handle the token, asynchronously, i.e. pass to your merchant bank to
+        // action the payment, then once finished, depending on the outcome:
+
+        // MyPaymentProvider.authorizeApplePayToken(token)
+        //    .then((captureStatus) => { })
+        //    .catch(());
 
         // Displays the 'done' green tick and closes the sheet.
         ApplePay.completeLastTransaction('success');
@@ -130,7 +139,8 @@ Valid values for the `shippingType` are:
  * `store`
  * `service`
 
-Valid values for the `billingAddressRequirement` and `shippingAddressRequirement` properties are:
+Valid values for the `billingAddressRequirement` and `shippingAddressRequirement`
+properties are:
 
  * `none` (default)
  * `all`
@@ -138,4 +148,3 @@ Valid values for the `billingAddressRequirement` and `shippingAddressRequirement
  * `name`
  * `email`
  * `phone`
-
