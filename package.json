@@ -1,5 +1,5 @@
 {
-  "name": "@private/cordova-plugin-applepay",
+  "name": "cordova-applepay",
   "version": "2.1.0",
   "description": "An adapted Cordova plugin to provide Apple Pay functionality.",
   "main": "www/applepay.js",
@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/username/cordova-plugin-applepay.git"
+    "url": "https://github.com/samkelleher/cordova-plugin-applepay"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/username/cordova-plugin-applepay#readme"
+  "homepage": "https://github.com/samkelleher/cordova-plugin-applepay"
 }
