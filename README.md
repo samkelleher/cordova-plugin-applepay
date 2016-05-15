@@ -6,7 +6,7 @@ with newer versions of Cordova.  Originally used for internal use.
 
 ## Installation
 ```
-$ cordova plugin add @private/cordova-plugin-applepay
+$ cordova plugin add cordova-applepay
 ```
 
 Install the plugin using Cordova 6 and above, which is based on npm. The plugin exposes the `org.cordova.applepay` plugin, accessible in the browser as `window.ApplePay`.
@@ -15,7 +15,8 @@ To make changes to this plugin, update the version in the `package.json` as requ
 
 ## Supported Platforms
 
-- iOS, with Cordova 6 and iOS Platform 4
+- iOS 8 and iOS 9
+- Requires Cordova 6 running iOS Platform 4.1.1
 
 ## Methods
 
@@ -27,7 +28,7 @@ To make changes to this plugin, update the version in the `package.json` as requ
 Request a payment with Apple Pay.
 
 ```
-  ApplePay.makePaymentRequest(order, successCallback, errorCallback);
+ApplePay.makePaymentRequest(order, successCallback, errorCallback);
 ```
 
 ## ApplePay.canMakePayments
@@ -37,7 +38,7 @@ If the `errorCallback` is called, the device does not support Apple Pay. See the
 If the `successCallback` is called, you're good to go ahead and display the related UI.
 
 ```
-  ApplePay.canMakePayments(successCallback, errorCallback);
+ApplePay.canMakePayments(successCallback, errorCallback);
 ```
 
 ## ApplePay.completeLastTransaction
