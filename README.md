@@ -24,13 +24,6 @@ The methods available all return promises, or accept success and error callbacks
 - ApplePay.makePaymentRequest
 - ApplePay.completeLastTransaction
 
-## ApplePay.makePaymentRequest
-Request a payment with Apple Pay.
-
-```
-ApplePay.makePaymentRequest(order, successCallback, errorCallback);
-```
-
 ## ApplePay.canMakePayments
 Detects if the current iDevice supports Apple Pay and has any capable cards registered.
 
@@ -48,11 +41,30 @@ ApplePay.canMakePayments()
     });
 ```
 
+## ApplePay.makePaymentRequest
+Request a payment with Apple Pay, returns a Promise that once resolved, has the payment token.
+
+```
+ApplePay.makePaymentRequest(order)
+    .then((token) => {
+        // User approved payment, token generated.
+    })
+    .catch((message) => {
+        // Error or user cancelled.
+    });
+```
+
 ## ApplePay.completeLastTransaction
-Once the `successCallback` of the `makePaymentRequest` has been called, the device will be waiting for a completion event.
+Once the makePaymentRequest has been resolved successfully, the device will be waiting for a completion event.
 This means, that the application must proceed with the token authorisation and return a success, failure, or other validation error. Once this has been passed back, the Apple Pay sheet will be dismissed via an animation.
 
-### Example
+```
+ApplePay.completeLastTransaction('success');
+```
+
+You can dismiss or invalidate the Apple Pay sheet by calling `completeLastTransaction` with a status string which can be `success`, `failure`, `invalid-billing-address`, `invalid-shipping-address`, `invalid-shipping-contact`, `require-pin`, `incorrect-pin`, `locked-pin`.
+
+### Payment Flow Example
 
 The order request object closely follows the format of the `PKPaymentRequest` class and thus its documentation will make excellent reading.
 
@@ -130,9 +142,3 @@ Valid values for the `billingAddressRequirement` and `shippingAddressRequirement
  * `email`
  * `phone`
 
-### Completing The Transaction
-```
-ApplePay.completeLastTransaction('success');
-```
-
-Once you have obtained the authorization with the provided token, you can dismiss or invalidate the Apple Pay sheet by calling `completeLastTransaction` with a status string which can be `success`, `failure`, `invalid-billing-address`, `invalid-shipping-address`, `invalid-shipping-contact`, `require-pin`, `incorrect-pin`, `locked-pin`.
