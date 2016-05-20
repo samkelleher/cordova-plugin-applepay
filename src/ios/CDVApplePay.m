@@ -375,8 +375,10 @@
                 [response setObject:billingContact.emailAddress forKey:@"billingEmailAddress"];
             }
 
-            if (billingContact.supplementarySubLocality) {
-                [response setObject:billingContact.supplementarySubLocality forKey:@"billingSupplementarySubLocality"];
+            if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 2, 0}]) {
+                if (billingContact.supplementarySubLocality) {
+                    [response setObject:billingContact.supplementarySubLocality forKey:@"billingSupplementarySubLocality"];
+                }
             }
 
             if (billingContact.name) {
@@ -446,9 +448,10 @@
                 }
 
             }
-
-            if (shippingContact.supplementarySubLocality) {
-                [response setObject:shippingContact.supplementarySubLocality forKey:@"shippingSupplementarySubLocality"];
+            if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 2, 0}]) {
+                if (shippingContact.supplementarySubLocality) {
+                    [response setObject:shippingContact.supplementarySubLocality forKey:@"shippingSupplementarySubLocality"];
+                }
             }
 
             if (shippingContact.postalAddress) {
