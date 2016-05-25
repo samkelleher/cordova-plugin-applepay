@@ -20,6 +20,81 @@
 
 }
 
+- (NSMutableDictionary*)applyABRecordBillingAddress:(ABRecordRef)address forDictionary:(NSMutableDictionary*)response {
+    NSString *address1;
+    NSString *city;
+    NSString *postcode;
+    NSString *state;
+    NSString *country;
+    NSString *countryCode;
+    //NSString *emailAddress;
+
+
+    // TODO: Validate email
+
+    //    if (shippingContact.emailAddress) {
+    //        [response setObject:shippingContact.emailAddress forKey:@"billingEmailAddress"];
+    //    }
+    //
+    //    if (shippingContact.supplementarySubLocality) {
+    //        [response setObject:shippingContact.supplementarySubLocality forKey:@"billingSupplementarySubLocality"];
+    //    }
+
+
+    //emailAddress = (__bridge NSString *)(CFDictionaryGetValue(address, kABPersonEmailProperty));
+
+
+    ABMultiValueRef addressRecord = ABRecordCopyValue(address, kABPersonAddressProperty);
+    if (ABMultiValueGetCount(addressRecord) > 0) {
+        CFDictionaryRef dict = ABMultiValueCopyValueAtIndex(addressRecord, 0);
+
+        address1 = (__bridge NSString *)(CFDictionaryGetValue(dict, kABPersonAddressStreetKey));
+        city = (__bridge NSString *)(CFDictionaryGetValue(dict, kABPersonAddressCityKey));
+        postcode = (__bridge NSString *)(CFDictionaryGetValue(dict, kABPersonAddressZIPKey));
+        state = (__bridge NSString *)(CFDictionaryGetValue(dict, kABPersonAddressStateKey));
+        country = (__bridge NSString *)(CFDictionaryGetValue(dict, kABPersonAddressCountryKey));
+        countryCode = (__bridge NSString *)(CFDictionaryGetValue(dict, kABPersonAddressCountryCodeKey));
+
+
+        if (address1) {
+            [response setObject:address1 forKey:@"billingAddressStreet"];
+        }
+
+        if (city) {
+            [response setObject:city forKey:@"billingAddressCity"];
+        }
+
+        if (postcode) {
+            [response setObject:postcode forKey:@"billingPostalCode"];
+        }
+
+        if (state) {
+            [response setObject:state forKey:@"billingAddressState"];
+        }
+
+        if (country) {
+            [response setObject:country forKey:@"billingCountry"];
+        }
+
+        if (countryCode) {
+            [response setObject:countryCode forKey:@"billingISOCountryCode"];
+        }
+
+    }
+
+    // TODO: Valdidate address
+
+    //    BOOL valid = (address1 && ![address1 isEqualToString:@""] &&
+    //                  city && ![city isEqualToString:@""] &&
+    //                  postcode && ![postcode isEqualToString:@""] &&
+    //                  country && ![country isEqualToString:@""]);
+    //
+    //    if ([selectedCountry isEqualToString:@"United States"]) {
+    //        valid = (valid && state && ![state isEqualToString:@""]);
+    //    }
+    return response;
+}
+
 - (NSMutableDictionary*)applyABRecordShippingAddress:(ABRecordRef)address forDictionary:(NSMutableDictionary*)response {
     NSString *address1;
     NSString *city;
@@ -99,10 +174,10 @@
 - (void)canMakePayments:(CDVInvokedUrlCommand*)command
 {
     if ([PKPaymentAuthorizationViewController canMakePayments]) {
-    if ((floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_8_0)) {
-        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
-        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-        return;
+        if ((floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_8_0)) {
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"This device cannot make payments."];
+            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+            return;
         } else if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
             if ([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:supportedPaymentNetworks capabilities:(merchantCapabilities)]) {
                 CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"This device can make payments and has a supported card"];
