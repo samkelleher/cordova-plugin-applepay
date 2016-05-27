@@ -200,3 +200,9 @@ properties are:
 * *Merchant Capabilities hard coded (3DS)* - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
 * *Event binds for delivery method selector* - An event can be raised when the customer
 selects different delivery options, so the merchant can update the delivery charges.
+
+## License
+
+This project is licensed under *GNU General Public License v3.0*.
+
+It is the work of [Sam Kelleher](https://samkelleher.com/). It is an alteration of an older project originally started by [@jbeuckm](https://github.com/jbeuckm)
