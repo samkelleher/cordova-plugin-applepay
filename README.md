@@ -51,6 +51,8 @@ normal 'Pay with Apple Bay' buttons as per the Apple Guidelines.
 
 ## ApplePay.makePaymentRequest
 Request a payment with Apple Pay, returns a Promise that once resolved, has the payment token.
+In your `order`, you will set parameters like the merchant ID, country, address requirements,
+order information etc. See a full example of an order at the end of this document.
 
 ```
 ApplePay.makePaymentRequest(order)
@@ -192,3 +194,9 @@ properties are:
  * `name`
  * `email`
  * `phone`
+
+## Limitations and TODOs
+* *Supported Payment Networks hard coded* (Visa, Mastercard, American Express) - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
+* *Merchant Capabilities hard coded (3DS)* - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
+* *Event binds for delivery method selector* - An event can be raised when the customer
+selects different delivery options, so the merchant can update the delivery charges.
