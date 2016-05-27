@@ -1,11 +1,11 @@
 # Cordova Apple Pay Plugin
-> An adapted Cordova plugin to provide Apple Pay functionality.
+> A dependency free Cordova plugin to provide Apple Pay functionality.
 
 Updated to provide additional data access to the plugin, test calls, and compatibility
 with newer versions of Cordova. Uses a Promise based interface in JavaScript.
 
-This plugin is compatible with all payment processors (eg Stripe etc) because
-the token is handled back your JavaScript application to pass to which ever payment
+This plugin is compatible with any payment processor (eg Stripe, Adyen etc) because
+the payment token is handled back your JavaScript application to pass to which ever payment
 processor you use.
 
 ## Installation
@@ -13,14 +13,16 @@ processor you use.
 $ cordova plugin add cordova-plugin-applepay
 ```
 
-Install the plugin using Cordova 6 and above, which is based on npm. The plugin
+Install the plugin using Cordova 6 and above, which is based on [npm](https://www.npmjs.com/package/cordova-plugin-applepay). The plugin
 exposes the `window.ApplePay` global in the browser.
 
 
-## Supported Platforms
+## Compatibility
 
-- iOS 8 and iOS 9
-- Requires Cordova 6 running iOS Platform 4.1.1
+- iOS 9 (using newer iOS9 only APIs)
+- iOS 8 (using initial Apple Pay APIs from iOS8 that are deprecated in iOS9)
+- iOS 7 and older (no Apple Pay, but doesn't affect code)
+- Requires Cordova 6 running at least iOS Platform 4.1.1
 
 ## Methods
 The methods available all return promises, or accept success and error callbacks.
@@ -29,30 +31,66 @@ The methods available all return promises, or accept success and error callbacks
 - ApplePay.completeLastTransaction
 
 ## ApplePay.canMakePayments
-Detects if the current iDevice supports Apple Pay and has any *capable* cards registered.
+Detects if the current device supports Apple Pay and has any *capable* cards registered.
 
 ```
 ApplePay.canMakePayments()
-    .then(() => {
-        // Apple Pay is enabled and a supported card is setup.
+    .then((message) => {
+        // Apple Pay is enabled and a supported card is setup. Expect:
+        // 'This device can make payments and has a supported card'
     })
     .catch((message) => {
-        // The device is too old for Apple Pay
-        // It's a good device, but no *supported* cards have been registered.
+        // There is an issue, examine the message to see the details, will be:
+        // 'This device cannot make payments.''
+        // 'This device can make payments but has no supported cards'
     });
 ```
+
+If in your `catch` you get the message `This device can make payments but has no supported cards` - you can decide if you want to handle this by showing the 'Setup Apple Pay' buttons instead of the
+normal 'Pay with Apple Bay' buttons as per the Apple Guidelines.
 
 ## ApplePay.makePaymentRequest
 Request a payment with Apple Pay, returns a Promise that once resolved, has the payment token.
 
 ```
 ApplePay.makePaymentRequest(order)
-    .then((token) => {
+    .then((paymentResponse) => {
         // User approved payment, token generated.
     })
     .catch((message) => {
         // Error or user cancelled.
     });
+```
+
+### Example Response
+
+The `paymentResponse` is an object with the keys that contain the token itself,
+this is what you'll need to pass along to your payment processor. Also, if you requested
+billing or shipping addresses, this information is also included.
+
+```
+{
+    "shippingAddressState": "London",
+    "shippingCountry": "United Kingdom",
+    "shippingISOCountryCode": "gb",
+    "billingAddressCity": "London",
+    "billingISOCountryCode": "gb",
+    "shippingNameLast": "Name",
+    "paymentData": "<BASE64 ENCODED TOKEN WILL APPEAR HERE>",
+    "shippingNameFirst": "First",
+    "billingAddressState": "London",
+    "billingAddressStreet": "Street 1\n",
+    "billingNameFirst": "First",
+    "billingPostalCode": "POST CODE",
+    "shippingPostalCode": "POST CODE",
+    "shippingAddressStreet": "Street Line 1\nStreet Line 2",
+    "billingNameLast": "NAME",
+    "billingSupplementarySubLocality": "",
+    "billingCountry": "United Kingdom",
+    "shippingAddressCity": "London",
+    "shippingSupplementarySubLocality": "",
+    "transactionIdentifier": "Simulated Identifier"
+}
 ```
 
 ## ApplePay.completeLastTransaction
@@ -113,18 +151,24 @@ ApplePay.makePaymentRequest(
           shippingAddressRequirement: 'none',
           shippingType: 'shipping'
     })
-    .then((token) => {
+    .then((paymentResponse) => {
         // The user has authorized the payment.
 
         // Handle the token, asynchronously, i.e. pass to your merchant bank to
         // action the payment, then once finished, depending on the outcome:
 
-        // MyPaymentProvider.authorizeApplePayToken(token)
-        //    .then((captureStatus) => { })
-        //    .catch(());
+        // Here is an example implementation:
 
-        // Displays the 'done' green tick and closes the sheet.
-        ApplePay.completeLastTransaction('success');
+        // MyPaymentProvider.authorizeApplePayToken(token.paymentData)
+        //    .then((captureStatus) => {
+        //        // Displays the 'done' green tick and closes the sheet.
+        //        ApplePay.completeLastTransaction('success');
+        //    })
+        //    .catch((err) => {
+        //        // Displays the 'failed' red cross.
+        //        ApplePay.completeLastTransaction('failure');
+        //    });
+
 
     })
     .catch((e) => {
