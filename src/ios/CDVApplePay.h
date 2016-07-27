@@ -2,6 +2,7 @@
 #import <Cordova/CDVPlugin.h>
 
 #import <PassKit/PassKit.h>
+#import <Stripe/Stripe.h>
 
 typedef void (^ARAuthorizationBlock)(PKPaymentAuthorizationStatus);
 

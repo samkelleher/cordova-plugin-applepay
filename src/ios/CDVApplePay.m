@@ -1,5 +1,6 @@
 #import "CDVApplePay.h"
 @import AddressBook;
+@import Stripe;
 
 @implementation CDVApplePay
 
@@ -16,6 +17,12 @@
     // Set the capabilities that your merchant supports
     // Adyen for example, only supports the 3DS one.
     merchantCapabilities = PKMerchantCapability3DS;// PKMerchantCapabilityEMV;
+
+    // Stripe Publishable Key
+    NSString * stripePublishableKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"StripePublishableKey"];
+    NSString * appleMerchantIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AppleMerchantIdentifier"];
+    [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:stripePublishableKey];
+    [[STPPaymentConfiguration sharedConfiguration] setAppleMerchantIdentifier:appleMerchantIdentifier];
 
 
 }
@@ -216,12 +223,6 @@
     return countryCode;
 }
 
-- (NSString *)merchantIdentifierFromArguments:(NSArray *)arguments
-{
-    NSString *merchantIdentifier = [[arguments objectAtIndex:0] objectForKey:@"merchantIdentifier"];
-    return merchantIdentifier;
-}
-
 - (NSString *)currencyCodeFromArguments:(NSArray *)arguments
 {
     NSString *currencyCode = [[arguments objectAtIndex:0] objectForKey:@"currencyCode"];
@@ -387,6 +388,7 @@
     // reset any lingering callbacks, incase the previous payment failed.
     self.paymentAuthorizationBlock = nil;
 
+    NSString * appleMerchantIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AppleMerchantIdentifier"];
     PKPaymentRequest *request = [PKPaymentRequest new];
 
     // Different version of iOS support different networks, (ie Discover card is iOS9+; not part of my project, so ignoring).
@@ -397,7 +399,7 @@
     // All this data is loaded from the Cordova object passed in. See documentation.
     [request setCurrencyCode:[self currencyCodeFromArguments:command.arguments]];
     [request setCountryCode:[self countryCodeFromArguments:command.arguments]];
-    [request setMerchantIdentifier:[self merchantIdentifierFromArguments:command.arguments]];
+    [request setMerchantIdentifier:appleMerchantIdentifier];
     [request setRequiredBillingAddressFields:[self billingAddressRequirementFromArguments:command.arguments]];
     [request setRequiredShippingAddressFields:[self shippingAddressRequirementFromArguments:command.arguments]];
     [request setShippingType:[self shippingTypeFromArguments:command.arguments]];
@@ -583,13 +585,17 @@
 {
     NSLog(@"CDVApplePay: didAuthorizePayment");
 
+    [Stripe createTokenWithPayment:payment
+                        completion:^(STPToken *token, NSError *error) {
+        NSDictionary* response = [self formatPaymentForApplication:payment];
+        [response setObject:token forKey:@"stripeToken"];
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response];
+        [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
+    }];
+
     if (completion) {
         self.paymentAuthorizationBlock = completion;
     }
-    NSDictionary* response = [self formatPaymentForApplication:payment];
-
-    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response];
-    [self.commandDelegate sendPluginResult:result callbackId:self.paymentCallbackId];
 }
 
 

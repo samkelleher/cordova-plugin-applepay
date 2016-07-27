@@ -1,12 +1,12 @@
 # Cordova Apple Pay Plugin
-> A dependency free Cordova plugin to provide Apple Pay functionality.
+
+> A dependency free Cordova plugin to provide Apple Pay functionality integrated with Stripe Framework.
 
 Updated to provide additional data access to the plugin, test calls, and compatibility
 with newer versions of Cordova. Uses a Promise based interface in JavaScript.
 
-This plugin is compatible with any payment processor (eg Stripe, Adyen etc) because
-the payment token is handled back your JavaScript application to pass to which ever payment
-processor you use.
+This plugin is integrated to Stripe, if you want an integrated-less plugin you can use
+[cordova-plugin-applepay](https://www.npmjs.com/package/cordova-plugin-applepay)
 
 ## Installation
 ```
@@ -79,6 +79,7 @@ billing or shipping addresses, this information is also included.
     "billingISOCountryCode": "gb",
     "shippingNameLast": "Name",
     "paymentData": "<BASE64 ENCODED TOKEN WILL APPEAR HERE>",
+    "stripeToken": "<STRIPE TOKEN>",
     "shippingNameFirst": "First",
     "billingAddressState": "London",
     "billingAddressStreet": "Street 1\n",
@@ -146,7 +147,6 @@ ApplePay.makePaymentRequest(
                   amount: 6.99
               }
           ],
-          merchantIdentifier: 'merchant.apple.test',
           currencyCode: 'GBP',
           countryCode: 'GB'
           billingAddressRequirement: 'none',
@@ -205,4 +205,4 @@ selects different delivery options, so the merchant can update the delivery char
 
 This project is licensed under *GNU General Public License v3.0*.
 
-It is the work of [Sam Kelleher](https://samkelleher.com/). It is an alteration of an older project originally started by [@jbeuckm](https://github.com/jbeuckm)
+It is based on the work of [Sam Kelleher](https://samkelleher.com/). It is an alteration of an older project originally started by [@jbeuckm](https://github.com/jbeuckm)
