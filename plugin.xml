@@ -15,6 +15,7 @@
         </js-module>
 
         <framework src="PassKit.framework"/>
+        <framework src="AddressBook.framework"/>
 
         <header-file src="src/ios/CDVApplePay.h"/>
         <source-file src="src/ios/CDVApplePay.m"/>
