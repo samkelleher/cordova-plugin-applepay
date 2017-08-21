@@ -148,7 +148,7 @@ ApplePay.makePaymentRequest(
           ],
           merchantIdentifier: 'merchant.apple.test',
           currencyCode: 'GBP',
-          countryCode: 'GB'
+          countryCode: 'GB',
           billingAddressRequirement: 'none',
           shippingAddressRequirement: 'none',
           shippingType: 'shipping'
