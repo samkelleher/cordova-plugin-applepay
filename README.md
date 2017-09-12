@@ -203,6 +203,6 @@ selects different delivery options, so the merchant can update the delivery char
 
 ## License
 
-This project is licensed under *GNU General Public License v3.0*.
+This project is licensed under *Apache 2.0*.
 
 It is the work of [Sam Kelleher](https://samkelleher.com/). It is an alteration of an older project originally started by [@jbeuckm](https://github.com/jbeuckm)
