@@ -56,7 +56,7 @@ var ApplePay = {
      * @param {Function} [errorCallback] - Optional error callback, receives message object.
      * @returns {void}
      */
-    startListeningForShippingContactSelection(successCallback, errorCallback) {
+    startListeningForShippingContactSelection: function(successCallback, errorCallback) {
         exec(function(message) {
             executeCallback(successCallback, message);
         }, function(message) {
@@ -70,7 +70,7 @@ var ApplePay = {
      * @param {Function} [errorCallback] - Optional error callback, receives message object.
      * @return {Promise}
      */
-    stopListeningForShippingContactSelection(successCallback, errorCallback) {
+    stopListeningForShippingContactSelection: function(successCallback, errorCallback) {
         return new Promise(function(resolve, reject) {
             exec(function(message) {
                 executeCallback(successCallback, message);
