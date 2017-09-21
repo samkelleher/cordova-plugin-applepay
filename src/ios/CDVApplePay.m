@@ -85,46 +85,46 @@
 
 - (PKAddressField)billingAddressRequirementFromArguments:(NSArray *)arguments
 {
-    NSString *billingAddressRequirement = [[arguments objectAtIndex:0] objectForKey:@"billingAddressRequirement"];
+    NSArray *billingAddressRequirement = [[arguments objectAtIndex:0] objectForKey:@"billingAddressRequirement"];
+    PKAddressField requiredFields = PKAddressFieldNone;
     
-    if ([billingAddressRequirement isEqualToString:@"none"]) {
-        return PKAddressFieldNone;
-    } else if ([billingAddressRequirement isEqualToString:@"all"]) {
-        return PKAddressFieldAll;
-    } else if ([billingAddressRequirement isEqualToString:@"postcode"]) {
-        return PKAddressFieldPostalAddress;
-    } else if ([billingAddressRequirement isEqualToString:@"name"]) {
-        return PKAddressFieldName;
-    } else if ([billingAddressRequirement isEqualToString:@"email"]) {
-        return PKAddressFieldEmail;
-    } else if ([billingAddressRequirement isEqualToString:@"phone"]) {
-        return PKAddressFieldPhone;
+    for (id requirement in billingAddressRequirement) {
+        if ([requirement isEqualToString:@"all"]) {
+            requiredFields = requiredFields | PKAddressFieldAll;
+        } else if ([requirement isEqualToString:@"postcode"]) {
+            requiredFields = requiredFields | PKAddressFieldPostalAddress;
+        } else if ([requirement isEqualToString:@"name"]) {
+            requiredFields = requiredFields | PKAddressFieldName;
+        } else if ([requirement isEqualToString:@"email"]) {
+            requiredFields = requiredFields | PKAddressFieldEmail;
+        } else if ([requirement isEqualToString:@"phone"]) {
+            requiredFields = requiredFields | PKAddressFieldPhone;
+        }
     }
     
-    
-    return PKAddressFieldNone;
+    return requiredFields;
 }
 
 - (PKAddressField)shippingAddressRequirementFromArguments:(NSArray *)arguments
 {
-    NSString *shippingAddressRequirement = [[arguments objectAtIndex:0] objectForKey:@"shippingAddressRequirement"];
+    NSArray *shippingAddressRequirements = [[arguments objectAtIndex:0] objectForKey:@"shippingAddressRequirement"];
+    PKAddressField requiredFields = PKAddressFieldNone;
     
-    if ([shippingAddressRequirement isEqualToString:@"none"]) {
-        return PKAddressFieldNone;
-    } else if ([shippingAddressRequirement isEqualToString:@"all"]) {
-        return PKAddressFieldAll;
-    } else if ([shippingAddressRequirement isEqualToString:@"postcode"]) {
-        return PKAddressFieldPostalAddress;
-    } else if ([shippingAddressRequirement isEqualToString:@"name"]) {
-        return PKAddressFieldName;
-    } else if ([shippingAddressRequirement isEqualToString:@"email"]) {
-        return PKAddressFieldEmail;
-    } else if ([shippingAddressRequirement isEqualToString:@"phone"]) {
-        return PKAddressFieldPhone;
+    for (id requirement in shippingAddressRequirements) {
+        if ([requirement isEqualToString:@"all"]) {
+            requiredFields = requiredFields | PKAddressFieldAll;
+        } else if ([requirement isEqualToString:@"postcode"]) {
+            requiredFields = requiredFields | PKAddressFieldPostalAddress;
+        } else if ([requirement isEqualToString:@"name"]) {
+            requiredFields = requiredFields | PKAddressFieldName;
+        } else if ([requirement isEqualToString:@"email"]) {
+            requiredFields = requiredFields | PKAddressFieldEmail;
+        } else if ([requirement isEqualToString:@"phone"]) {
+            requiredFields = requiredFields | PKAddressFieldPhone;
+        }
     }
     
-    
-    return PKAddressFieldNone;
+    return requiredFields;
 }
 
 - (NSArray *)itemsFromArguments:(NSArray *)arguments
@@ -355,6 +355,10 @@
     if (shippingContact) {
         if (shippingContact.emailAddress) {
             [response setObject:shippingContact.emailAddress forKey:@"shippingEmailAddress"];
+        }
+        
+        if (shippingContact.phoneNumber) {
+            [response setObject:shippingContact.phoneNumber.stringValue forKey:@"shippingPhoneNumber"];
         }
         
         if (shippingContact.name) {

@@ -195,6 +195,9 @@ properties are:
  * `email`
  * `phone`
 
+You can set these as an array if you want, for example,
+`['name', 'email', 'phone']`.
+
 ## Limitations and TODOs
 * *Supported Payment Networks hard coded* (Visa, Mastercard, American Express) - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
 * *Merchant Capabilities hard coded (3DS)* - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.

@@ -34,6 +34,12 @@ var ApplePay = {
      * @returns {Promise}
      */
     makePaymentRequest: function(order, successCallback, errorCallback) {
+        if (!Array.isArray(order.billingAddressRequirement)) {
+            order.billingAddressRequirement = [order.billingAddressRequirement];
+        }
+        if (!Array.isArray(order.shippingAddressRequirement)) {
+            order.shippingAddressRequirement = [order.shippingAddressRequirement];
+        }
         return new Promise(function(resolve, reject) {
             exec(function(message) {
                 executeCallback(successCallback, message);
