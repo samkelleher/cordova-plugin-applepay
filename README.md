@@ -91,7 +91,10 @@ billing or shipping addresses, this information is also included.
     "billingCountry": "United Kingdom",
     "shippingAddressCity": "London",
     "shippingSupplementarySubLocality": "",
-    "transactionIdentifier": "Simulated Identifier"
+    "transactionIdentifier": "Simulated Identifier",
+    "paymentMethodDisplayName": "MasterCard 1234",
+    "paymentMethodNetwork": "MasterCard",
+    "paymentMethodTypeCard": "credit"
 }
 ```
 

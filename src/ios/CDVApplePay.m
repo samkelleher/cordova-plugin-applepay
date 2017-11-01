@@ -439,6 +439,32 @@
 
     [response setObject:paymentData  forKey:@"paymentData"];
     [response setObject:payment.token.transactionIdentifier  forKey:@"transactionIdentifier"];
+    [response setObject:payment.token.paymentMethod.displayName  forKey:@"paymentMethodDisplayName"];
+    [response setObject:payment.token.paymentMethod.network  forKey:@"paymentMethodNetwork"];
+
+    NSString *typeCard = nil;
+
+    switch(payment.token.paymentMethod.type) {
+            case PKPaymentMethodTypeUnknown:
+                typeCard = @"unknown"; // The card’s type is not known.
+                break;
+            case PKPaymentMethodTypeDebit:
+                typeCard = @"debit"; // A debit card.
+                break;
+            case PKPaymentMethodTypeCredit:
+                typeCard = @"credit";// A credit card.
+                break;
+            case PKPaymentMethodTypePrepaid:
+                typeCard = @"prepaid";// A prepaid card.
+                break;
+            case PKPaymentMethodTypeStore:
+                typeCard = @"store";// A store card.
+                break;
+            default:
+                typeCard = @"error";// A store card.
+        }
+
+    [response setObject:typeCard  forKey:@"paymentMethodTypeCard"];
 
     // Different version of iOS present the billing/shipping addresses in different ways. Pain.
     if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9, 0, 0}]) {
