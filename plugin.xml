@@ -14,6 +14,7 @@
             <clobbers target="ApplePay" />
         </js-module>
 
+        <framework src="AddressBook.framework"/>
         <framework src="PassKit.framework"/>
 
         <header-file src="src/ios/CDVApplePay.h"/>
