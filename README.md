@@ -19,9 +19,8 @@ exposes the `window.ApplePay` global in the browser.
 
 ## Compatibility
 
-- iOS 9 (using newer iOS9 only APIs)
-- iOS 8 (using initial Apple Pay APIs from iOS8 that are deprecated in iOS9)
-- iOS 7 and older (no Apple Pay, but doesn't affect code)
+- iOS 11 and 10
+- iOS 9.2
 - Requires Cordova 6 running at least iOS Platform 4.1.1
 
 ## Methods
@@ -278,4 +277,6 @@ selects different delivery options, so the merchant can update the delivery char
 
 This project is licensed under *Apache 2.0*.
 
-It is the work of [Sam Kelleher](https://samkelleher.com/). It is an alteration of an older project originally started by [@jbeuckm](https://github.com/jbeuckm)
+This project is currently maintained by [Andrew Crites](https://github.com/ajcrites).
+
+It is originally the work of [Sam Kelleher](https://samkelleher.com/). It is an alteration of an older project originally started by [@jbeuckm](https://github.com/jbeuckm)

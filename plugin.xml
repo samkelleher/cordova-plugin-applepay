@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
            id="cordova-plugin-applepay"
-      version="2.1.4">
+      version="3.0.0">
 
     <name>Apple Pay</name>
     <description>Implements Apple Pay.</description>
@@ -20,9 +20,9 @@
         <source-file src="src/ios/CDVApplePay.m"/>
 
         <config-file target="config.xml" parent="/*">
-	        <feature name="ApplePay">
-	            <param name="ios-package" value="CDVApplePay"/>
-	        </feature>
+            <feature name="ApplePay">
+                <param name="ios-package" value="CDVApplePay"/>
+            </feature>
         </config-file>
 
     </platform>
