@@ -29,6 +29,9 @@ The methods available all return promises, or accept success and error callbacks
 - ApplePay.canMakePayments
 - ApplePay.makePaymentRequest
 - ApplePay.completeLastTransaction
+- ApplePay.startListeningForShippingContactSelection - This does _not_ return a promise, but it fires the success callback upon shipping contact selection. See below.
+- ApplePay.updateItemsAndShippingMethods
+- ApplePay.stopListeningForShippingContactSelection
 
 ## ApplePay.canMakePayments
 Detects if the current device supports Apple Pay and has any *capable* cards registered.
@@ -194,6 +197,73 @@ properties are:
  * `name`
  * `email`
  * `phone`
+
+You can set these as an array if you want, for example,
+`['name', 'email', 'phone']`.
+
+## Responding to User Shipping Contact Selection Events
+Use the following methods together to work with user shipping contact selection events.
+
+### ApplePay.startListeningForShippingContactSelection
+Starts listening for shipping contact selection changes Any time the user selects shipping contact, this callback will fire.  You *must* call `ApplePay.updateItemsAndShippingMethods` (see below) in response or else the user will not be able to process payment. Apple Pay waits for a completion method to be called to update these proprties before allowing the user to process payments.
+
+Any time the user updates their shipping contact, the success callback to this method will trigger. Then, you must update the items / shipping methods as a result of the user's selection.
+
+You can also call `ApplePay.stopListeningForShippingContactSelection` to stop listening for shipping contact selection changes. Then, you no longer have to call `updateItemsAndShippingMethods` on shipping method selection.
+
+### ApplePay.updateItemsAndShippingMethods
+Call this in response to any `startListeningForShippingContactSelection` event. Provide a list similar to `makePaymentRequest` including `items` and `shippingMethods` arrays. The other properties are not used.
+
+This method returns a promise that wraps the shipping contact selection completion method and should generally succeed.
+
+### ApplePay.stopListeningForShippingContactSelection
+Call this when you no longer need to listen to shipping contact selection events or after completing a transaction attempt.
+
+This method returns a promise that wraps unsubscribing from the Apple Pay event internally. The Promise will be rejected if you were not subscribed to listen to these events initially.
+
+### Example
+
+```
+// Set this up initially. This will also fire if the user has a default
+// shipping contact in the apple pay sheet
+ApplePay.startListeningForShippingContactSelection(async selection => {
+    const { items, shippingMethods } = getItemsAndMethodsFromAddressInfo(
+        selection.shippingAddressCity,
+        selection.shippingAddressState,
+        selection.shippingPostalCode,
+        selection.shippingISOCountryCode, // this is capitalized
+    );
+
+    try {
+        await ApplePay.updateItemsAndShippingMethods({ items, shippingMethods });
+    }
+    catch (e) {
+        // handle error if shipping contact selection couldn't complete for some reason
+    }
+});
+
+try {
+    const response = await ApplePay.makePaymentRequest(paymentRequestOptions);
+    const success = await MyPaymentProvider.authorize(response.paymentData);
+
+    if (success) {
+        await ApplePay.completeLastTransaction('success');
+    }
+    else {
+        await ApplePay.completeLastTransaction('failure');
+    }
+}
+catch (err) {
+    // handle payment request or transaction errors
+}
+
+try {
+    await ApplePay.stopListeningForShippingContactSelection();
+}
+catch (err) {
+    // handle error if you could not unsubscribe from shipping contact selection events
+}
+```
 
 ## Limitations and TODOs
 * *Supported Payment Networks hard coded* (Visa, Mastercard, American Express) - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
