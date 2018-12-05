@@ -1,5 +1,5 @@
 # Cordova Apple Pay Plugin
-> A dependency free Cordova plugin to provide Apple Pay functionality.
+> A dependency-free Cordova plugin to provide Apple Pay functionality.
 
 Updated to provide additional data access to the plugin, test calls, and compatibility
 with newer versions of Cordova. Uses a Promise based interface in JavaScript.
@@ -16,11 +16,30 @@ $ cordova plugin add cordova-plugin-applepay
 Install the plugin using Cordova 6 and above, which is based on [npm](https://www.npmjs.com/package/cordova-plugin-applepay). The plugin
 exposes the `window.ApplePay` global in the browser.
 
+## Updating Entitlements
+This plugin does not automatically update the necessary entitlements for using Apple Pay (required in production). You can update your `config.xml` to set the merchant ID with the proper entitlements. You can also do this at build / signing time when creating the app build through Xcode.
+
+```
+<!-- example for updates to config.xml -->
+<platform name="ios">
+  <!-- other properties here -->
+  <config-file target="*-Debug.plist" parent="com.apple.developer.in-app-payments">
+    <array>
+      <string>Put your debug / developer merchant ID here</string>
+    </array>
+  </config-file>
+
+  <config-file target="*-Release.plist" parent="com.apple.developer.in-app-payments">
+    <array>
+      <string>Put your production merchant ID here</string>
+    </array>
+  </config-file>
+</platform>
+```
 
 ## Compatibility
 
-- iOS 11 and 10
-- iOS 9.2
+- iOS 9.2-12
 - Requires Cordova 6 running at least iOS Platform 4.1.1
 
 ## Methods
