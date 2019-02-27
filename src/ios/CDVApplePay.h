@@ -6,11 +6,7 @@
 typedef void (^ARAuthorizationBlock)(PKPaymentAuthorizationStatus);
 typedef void (^ARListUpdateBlock)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *>*, NSArray<PKPaymentSummaryItem *>*);
 
-@interface CDVApplePay : CDVPlugin <PKPaymentAuthorizationViewControllerDelegate>
-{
-    PKMerchantCapability merchantCapabilities;
-    NSArray<NSString *>* supportedPaymentNetworks;
-}
+@interface CDVApplePay : CDVPlugin <PKPaymentAuthorizationViewControllerDelegate> {}
 
 @property (nonatomic, strong) ARAuthorizationBlock paymentAuthorizationBlock;
 

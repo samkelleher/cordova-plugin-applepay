@@ -1,6 +1,6 @@
 var argscheck = require('cordova/argscheck'),
-    utils = require('cordova/utils'),
-    exec = require('cordova/exec');
+  utils = require('cordova/utils'),
+  exec = require('cordova/exec');
 
 var executeCallback = function(callback, message) {
     if (typeof callback === 'function') {
@@ -15,7 +15,12 @@ var ApplePay = {
      * @param {Function} [errorCallback] - Optional error callback, recieves message object.
      * @returns {Promise}
      */
-    canMakePayments: function(successCallback, errorCallback) {
+    canMakePayments: function(query, successCallback, errorCallback) {
+        if (typeof query == 'function') { // missing query, method is invoked with two function args only
+            errorCallback = successCallback;
+            successCallback = query;
+            query = {}
+        }
         return new Promise(function(resolve, reject) {
             exec(function(message) {
                 executeCallback(successCallback, message);
@@ -23,10 +28,10 @@ var ApplePay = {
             }, function(message) {
                 executeCallback(errorCallback, message);
                 reject(message);
-            }, 'ApplePay', 'canMakePayments', []);
+            }, 'ApplePay', 'canMakePayments', [query]);
         });
     },
-
+    
     /**
      * Opens the Apple Pay sheet and shows the order information.
      * @param {Function} [successCallback] - Optional success callback, recieves message object.
@@ -50,7 +55,7 @@ var ApplePay = {
             }, 'ApplePay', 'makePaymentRequest', [order]);
         });
     },
-
+    
     /**
      * Starts listening for shipping contact selection changes
      * Any time the user selects shipping contact, this callback will fire.
@@ -69,7 +74,7 @@ var ApplePay = {
             executeCallback(errorCallback, message);
         }, 'ApplePay', 'startListeningForShippingContactSelection');
     },
-
+    
     /**
      * Stops listening for shipping contact selection changes
      * @param {Function} [successCallback] - Optional success callback
@@ -87,7 +92,7 @@ var ApplePay = {
             }, 'ApplePay', 'stopListeningForShippingContactSelection');
         });
     },
-
+    
     /**
      * Update the list of pay sheet items and shipping methods in response to
      * a shipping contact selection event. This *must* be called in response to
@@ -109,7 +114,7 @@ var ApplePay = {
             }, 'ApplePay', 'updateItemsAndShippingMethods', [list]);
         });
     },
-
+    
     /**
      * While the Apple Pay sheet is still open, and the callback from the `makePaymentRequest` has completed,
      * this call will pass the status to the sheet and close it if successfull.
