@@ -63,7 +63,10 @@ ApplePay.canMakePayments().then((message) => {
   // 'This device cannot make payments.''
   // 'This device can make payments but has no supported cards'
 });
+```
 
+Detects if the current device supports Apple Pay and has any cards of `supportedNetworks` and `merchantCapabilities`.
+```ecmascript 6
 ApplePay.canMakePayments({
   // supportedNetworks should not be an empty array. The supported networks currently are: amex, discover, masterCard, visa
   supportedNetworks: ['visa', 'amex'],
