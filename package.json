@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-applepay",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "description":
   "An adapted Cordova plugin to provide Apple Pay functionality.",
   "main": "www/applepay.js",
