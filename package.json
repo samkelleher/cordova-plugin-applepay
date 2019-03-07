@@ -1,8 +1,8 @@
 {
   "name": "cordova-plugin-applepay",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description":
-    "An adapted Cordova plugin to provide Apple Pay functionality.",
+  "An adapted Cordova plugin to provide Apple Pay functionality.",
   "main": "www/applepay.js",
   "scripts": {},
   "repository": {
@@ -15,7 +15,10 @@
     "email": "sam@samkelleher.com",
     "url": "https://samkelleher.com/"
   },
-  "contributors": ["Andrew Crites <acjcrites@gmail.com>"],
+  "contributors": [
+    "Andrew Crites <acjcrites@gmail.com>",
+    "Balazs Sarvari <balazs.sarvari@gmail.com>"
+  ],
   "license": "Apache-2.0",
   "homepage": "https://github.com/samkelleher/cordova-plugin-applepay"
 }

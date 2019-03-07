@@ -54,17 +54,33 @@ The methods available all return promises, or accept success and error callbacks
 ## ApplePay.canMakePayments
 Detects if the current device supports Apple Pay and has any *capable* cards registered.
 
+```ecmascript 6
+ApplePay.canMakePayments().then((message) => {
+  // Apple Pay is enabled. Expect:
+  // 'This device can make payments.'
+}).catch((message) => {
+  // There is an issue, examine the message to see the details, will be:
+  // 'This device cannot make payments.''
+  // 'This device can make payments but has no supported cards'
+});
 ```
-ApplePay.canMakePayments()
-    .then((message) => {
-        // Apple Pay is enabled and a supported card is setup. Expect:
-        // 'This device can make payments and has a supported card'
-    })
-    .catch((message) => {
-        // There is an issue, examine the message to see the details, will be:
-        // 'This device cannot make payments.''
-        // 'This device can make payments but has no supported cards'
-    });
+
+Detects if the current device supports Apple Pay and has any cards of `supportedNetworks` and `merchantCapabilities`.
+```ecmascript 6
+ApplePay.canMakePayments({
+  // supportedNetworks should not be an empty array. The supported networks currently are: amex, discover, masterCard, visa
+  supportedNetworks: ['visa', 'amex'],
+  
+  // when merchantCapabilities is passed in, supportedNetworks must also be provided. Valid values: 3ds, debit, credit, emv
+  merchantCapabilities: ['3ds', 'debit', 'credit']
+}).then((message) => {
+  // Apple Pay is enabled and a supported card is setup. Expect:
+  // 'This device can make payments and has a supported card'
+}).catch((message) => {
+  // There is an issue, examine the message to see the details, will be:
+  // 'This device cannot make payments.''
+  // 'This device can make payments but has no supported cards'
+});
 ```
 
 If in your `catch` you get the message `This device can make payments but has no supported cards` - you can decide if you want to handle this by showing the 'Setup Apple Pay' buttons instead of the
@@ -170,6 +186,8 @@ ApplePay.makePaymentRequest(
                   amount: 6.99
               }
           ],
+          supportedNetworks: ['visa', 'masterCard', 'discover'],
+          merchantCapabilities: ['3ds', 'debit', 'credit'],          
           merchantIdentifier: 'merchant.apple.test',
           currencyCode: 'GBP',
           countryCode: 'GB',
@@ -287,8 +305,7 @@ catch (err) {
 ```
 
 ## Limitations and TODOs
-* *Supported Payment Networks hard coded* (Visa, Mastercard, American Express) - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
-* *Merchant Capabilities hard coded (3DS)* - This should be updated to be passed along in the order, but is rarely changed and trivial to alter in code.
+* *Support more networks* - currently only Visa, MasterCard, American Express and Discover are accepted as config options.
 * *Event binds for delivery method selector* - An event can be raised when the customer
 selects different delivery options, so the merchant can update the delivery charges.
 
